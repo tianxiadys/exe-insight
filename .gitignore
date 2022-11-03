@@ -1,6 +1,6 @@
+.idea
+.vs
+.vscode
 
-.vs/
-.idea/
-
-*.suo
-*.user
+dist
+node_modules

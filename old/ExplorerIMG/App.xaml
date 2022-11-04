@@ -1,8 +1,0 @@
-﻿<Application x:Class="ExplorerIMG.App" Startup="AppStartup"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="clr-namespace:ExplorerIMG">
-	<Application.Resources>
-
-	</Application.Resources>
-</Application>

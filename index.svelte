@@ -1,4 +1,14 @@
-<button on:click={()=>a1++}>{a1}</button>
 <script>
-  let a1 = 0
+  import { parseFile } from './parser/parser.js'
+
+  window.ondragover = event => {
+    event.preventDefault()
+  }
+  window.ondrop = async event => {
+    event.preventDefault()
+
+    let file = event.dataTransfer.files.item(0)
+
+    await parseFile(file)
+  }
 </script>

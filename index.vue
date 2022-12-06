@@ -13,10 +13,8 @@ export default {
 
       let file = event.dataTransfer.files.item(0)
 
-      let test = await HeaderDOS(file)
-
-      console.log(test)
-      window.a = test
+      let test1 = await HeaderDOS(file)
+      console.log(test1)
     }
   }
 }

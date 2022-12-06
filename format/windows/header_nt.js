@@ -1,25 +1,21 @@
-export default class {
-  async constructor(file, offset) {
-    let blob = file.slice(offset, 4)
-    let buffer = await blob.arrayBuffer()
-    this.file = file
-    this.view = new DataView(buffer)
-  }
+import HeaderCOFF from './header_coff.js'
+import HeaderPE from './header_pe.js'
 
-  getType() {
-    return this.view.getUint32(0, true)
+export default async function(file, offset) {
+  //初始化
+  let blob = file.slice(offset, offset + 4)
+  let buffer = await blob.arrayBuffer()
+  let view = new DataView(buffer)
+  let result = {}
+  //读取结构
+  result.type = view.getUint32(0, true)
+  //构造头
+  if (result.type === 0x4550) {
+    result.coff = await HeaderCOFF(file, offset + 4)
+    result.pe = await HeaderPE(file, offset + 24, result.coff.sizeOfOptionalHeader)
+  } else {
+    throw Error('not a pe file')
   }
-
-  async buildCOFF() {
-
-  }
-
-  async buildPE() {
-    let type = this.getType()
-    if (type === 0x50450000) {
-      let coff = await this.buildCOFF()
-    } else {
-      throw  new Error('not a pe file')
-    }
-  }
+  //返回
+  return result
 }

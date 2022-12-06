@@ -1,3 +1,17 @@
-export default class {
-  async constructor(file, offset) {}
+export default async function(file, offset) {
+  //初始化
+  let blob = file.slice(offset, offset + 20)
+  let buffer = await blob.arrayBuffer()
+  let view = new DataView(buffer)
+  let result = {}
+  //读取结构
+  result.machine = view.getUint16(0, true)
+  result.numberOfSections = view.getUint16(2, true)
+  result.timeDateStamp = view.getUint32(4, true)
+  result.pointerToSymbolTable = view.getUint32(8, true)
+  result.numberOfSymbols = view.getUint32(12, true)
+  result.sizeOfOptionalHeader = view.getUint16(16, true)
+  result.characteristics = view.getUint16(18, true)
+  //返回
+  return result
 }

@@ -1,5 +1,6 @@
-import App from './index.svelte'
+import { createApp } from 'vue'
+import App from './index.vue'
 import './index.css'
 
-const target = document.getElementById('app')
-new App({ target })
+const app = createApp(App)
+app.mount('#app')

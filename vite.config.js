@@ -1,8 +1,8 @@
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import pluginVue from '@vitejs/plugin-vue'
 
-//noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols
 export default {
-  plugins: [
-    svelte()
-  ]
+    plugins: [
+        pluginVue()
+    ]
 }

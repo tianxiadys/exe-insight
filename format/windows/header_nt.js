@@ -8,11 +8,11 @@ export default async function(file, offset) {
   let view = new DataView(buffer)
   let result = {}
   //读取结构
-  result.type = view.getUint32(0, true)
-  //构造头
-  if (result.type === 0x4550) {
-    result.coff = await HeaderCOFF(file, offset + 4)
-    result.pe = await HeaderPE(file, offset + 24, result.coff.sizeOfOptionalHeader)
+  result.Type = view.getUint32(0, true)
+  //检查类型
+  if (result.Type === 0x4550) {
+    result.COFF = await HeaderCOFF(file, offset + 4)
+    result.PE = await HeaderPE(file, offset + 24, result.COFF.SizeOfOptionalHeader)
   } else {
     throw Error('not a pe file')
   }

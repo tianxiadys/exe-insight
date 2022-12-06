@@ -1,28 +1,31 @@
-import HeaderNT from './header_nt.js'
+// import HeaderNT from './header_nt.js'
 
-export default class {
-  async constructor(file) {
-    let blob = file.slice(0, 40)
-    let buffer = await blob.arrayBuffer()
-    this.file = file
-    this.view = new DataView(buffer)
+export default async function(file) {
+  let blob = file.slice(0, 0x40)
+  let buffer = await blob.arrayBuffer()
+  let view = new DataView(buffer)
+
+  function getType() {
+    return view.getUint16(0, true)
   }
 
-  getType() {
-    return this.view.getUint16(0, true)
+  function getLfaNew() {
+    return view.getUint32(0x3C, true)
   }
 
-  getLfaNew() {
-    return this.view.getUint32(0x3C, true)
-  }
-
-  async buildNT() {
-    let type = this.getType()
-    if (type === 0x4D5A) {
-      let next = this.getLfaNew()
-      return new HeaderNT(this.file, next)
+  async function buildNT() {
+    let type = getType()
+    if (type === 0x5A4D) {
+      let next = getLfaNew()
+      //return new HeaderNT(this.file, next)
     } else {
       throw new Error('not a dos file')
     }
+  }
+
+  return {
+    getType,
+    getLfaNew,
+    buildNT
   }
 }

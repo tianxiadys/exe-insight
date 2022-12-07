@@ -31,7 +31,7 @@ export async function headerSection(file, offset, size) {
                 return section.PointerToRawData - section.VirtualAddress
             }
         }
-        return undefined
+        throw Error('cannot translate pointer')
     }
     //返回
     return resultList

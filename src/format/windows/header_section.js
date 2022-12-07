@@ -24,6 +24,15 @@ export async function headerSection(file, offset, size) {
         //添加到结果数组
         resultList.push(section)
     }
+    //转换指针函数
+    resultList.translate = pointer => {
+        for (let section of resultList) {
+            if (section.VirtualAddress <= pointer && section.VirtualAddress + section.VirtualSize > pointer) {
+                return section.PointerToRawData - section.VirtualAddress
+            }
+        }
+        throw Error('cannot translate pointer')
+    }
     //返回
     return resultList
 }

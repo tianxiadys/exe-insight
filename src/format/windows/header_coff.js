@@ -1,4 +1,4 @@
-export default async function(file, offset) {
+export async function headerCOFF(file, offset) {
     //初始化
     let blob = file.slice(offset, offset + 20)
     let buffer = await blob.arrayBuffer()

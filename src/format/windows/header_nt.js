@@ -1,7 +1,8 @@
-import HeaderCOFF from './header_coff.js'
-import HeaderPE from './header_pe.js'
+import { headerCOFF } from './header_coff.js'
+import { headerPE } from './header_pe.js'
+import { headerMAP } from './header_map.js'
 
-export default async function(file, offset) {
+export async function headerNT(file, offset) {
     //初始化
     let blob = file.slice(offset, offset + 4)
     let buffer = await blob.arrayBuffer()
@@ -11,8 +12,9 @@ export default async function(file, offset) {
     result.Type = view.getUint32(0, true)
     //检查类型
     if (result.Type === 0x4550) {
-        result.COFF = await HeaderCOFF(file, offset + 4)
-        result.PE = await HeaderPE(file, offset + 24, result.COFF.SizeOfOptionalHeader)
+        result.COFF = await headerCOFF(file, offset + 4)
+        result.PE = await headerPE(file, offset + 24, result.COFF.SizeOfOptionalHeader)
+        result.MAP = await headerMAP(file, offset + result.COFF.SizeOfOptionalHeader + 24, result.COFF.NumberOfSections)
     } else {
         throw Error('not a pe file')
     }

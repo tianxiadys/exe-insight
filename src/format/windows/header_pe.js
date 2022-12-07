@@ -1,4 +1,4 @@
-export default async function(file, offset, size) {
+export async function headerPE(file, offset, size) {
     //初始化
     let blob = file.slice(offset, offset + size)
     let buffer = await blob.arrayBuffer()

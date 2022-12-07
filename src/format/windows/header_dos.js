@@ -1,6 +1,6 @@
-import HeaderNT from './header_nt.js'
+import { headerNT } from './header_nt.js'
 
-export default async function(file) {
+export async function headerDOS(file) {
     //初始化
     let blob = file.slice(0, 64)
     let buffer = await blob.arrayBuffer()
@@ -11,7 +11,7 @@ export default async function(file) {
     result.LfaNew = view.getUint32(60, true)
     //检查类型
     if (result.Type === 0x5A4D) {
-        result.NT = await HeaderNT(file, result.LfaNew)
+        result.NT = await headerNT(file, result.LfaNew)
     } else {
         throw Error('not a dos file')
     }

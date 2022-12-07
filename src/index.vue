@@ -1,7 +1,7 @@
 <template>
 </template>
 <script>
-import HeaderDOS from './format/windows/header_dos.js'
+import { headerDOS } from './format/windows/header_dos.js'
 
 export default {
   mounted() {
@@ -13,7 +13,7 @@ export default {
 
       let file = event.dataTransfer.files.item(0)
 
-      let test1 = await HeaderDOS(file)
+      let test1 = await headerDOS(file)
       console.log(test1)
     }
   }

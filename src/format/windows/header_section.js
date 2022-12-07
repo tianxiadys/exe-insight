@@ -1,4 +1,4 @@
-import { readString8 } from './string.js'
+import { readString8 } from './base_string.js'
 
 export async function headerSection(file, offset, size) {
     //初始化
@@ -31,7 +31,7 @@ export async function headerSection(file, offset, size) {
                 return section.PointerToRawData - section.VirtualAddress
             }
         }
-        throw Error('cannot translate pointer')
+        return undefined
     }
     //返回
     return resultList

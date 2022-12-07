@@ -1,7 +1,7 @@
 <template>
 </template>
 <script>
-import HeaderDOS from './format/windows/header_dos'
+import HeaderDOS from './format/windows/header_dos.js'
 
 export default {
   mounted() {

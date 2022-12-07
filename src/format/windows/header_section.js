@@ -1,9 +1,9 @@
 import { readString8 } from './string.js'
 
-export async function headerMAP(file, offset, size) {
+export async function headerSection(file, offset, size) {
     //初始化
     let resultList = []
-    //循环读取映射表
+    //循环读取
     for (let index = 0; index < size; index++) {
         //初始化
         let blob = file.slice(offset + index * 40, offset + index * 40 + 40)

@@ -1,6 +1,6 @@
 import { headerCOFF } from './header_coff.js'
 import { headerPE } from './header_pe.js'
-import { headerMAP } from './header_map.js'
+import { headerSection } from './header_section.js'
 
 export async function headerNT(file, offset) {
     //初始化
@@ -14,7 +14,7 @@ export async function headerNT(file, offset) {
     if (result.Type === 0x4550) {
         result.COFF = await headerCOFF(file, offset + 4)
         result.PE = await headerPE(file, offset + 24, result.COFF.SizeOfOptionalHeader)
-        result.MAP = await headerMAP(file, offset + result.COFF.SizeOfOptionalHeader + 24, result.COFF.NumberOfSections)
+        result.SECTION = await headerSection(file, offset + result.COFF.SizeOfOptionalHeader + 24, result.COFF.NumberOfSections)
     } else {
         throw Error('not a pe file')
     }

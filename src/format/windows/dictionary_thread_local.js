@@ -1,2 +1,2 @@
-export async function dictionaryThreadLocal(file, dictionary, offset) {
+export async function dictionaryThreadLocal(file, dictionary, section) {
 }

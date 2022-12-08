@@ -37,39 +37,51 @@ export async function headerNT(file, offset) {
             let dictionary = result.PE.DICTIONARY[index]
             //检查有效
             if (dictionary.VritualAddress > 0) {
-                //虚拟地址映射到文件地址
-                let offset = result.SECTION.translate(dictionary.VritualAddress)
-                //读取目录
                 if (index === 0) {
-                    result.EXPORT = await dictionaryExport(file, dictionary, offset)
+                    //todo
+                    result.EXPORT = await dictionaryExport(file, dictionary, result.SECTION)
                 } else if (index === 1) {
-                    result.IMPORT = await dictionaryImport(file, dictionary, offset)
+                    //todo
+                    result.IMPORT = await dictionaryImport(file, dictionary, result.SECTION)
                 } else if (index === 2) {
-                    result.RESOURCE = await dictionaryResource(file, dictionary, offset)
+                    //todo
+                    result.RESOURCE = await dictionaryResource(file, dictionary, result.SECTION)
                 } else if (index === 3) {
-                    result.EXCEPTION = await dictionaryException(file, dictionary, offset)
+                    //todo
+                    result.EXCEPTION = await dictionaryException(file, dictionary, result.SECTION)
                 } else if (index === 4) {
-                    result.SECURITY = await dictionarySecurity(file, dictionary, offset)
+                    //todo
+                    result.SECURITY = await dictionarySecurity(file, dictionary, result.SECTION)
                 } else if (index === 5) {
-                    result.BASE_RELOCATION = await dictionaryBaseRelocation(file, dictionary, offset)
+                    //todo
+                    result.BASE_RELOCATION = await dictionaryBaseRelocation(file, dictionary, result.SECTION)
                 } else if (index === 6) {
-                    result.DEBUG = await dictionaryDebug(file, dictionary, offset)
+                    //todo
+                    result.DEBUG = await dictionaryDebug(file, dictionary, result.SECTION)
                 } else if (index === 7) {
-                    result.ARCHITECTURE = await dictionaryArchitecture(file, dictionary, offset)
+                    //todo
+                    result.ARCHITECTURE = await dictionaryArchitecture(file, dictionary, result.SECTION)
                 } else if (index === 8) {
-                    result.GLOBAL_POINTER = await dictionaryGlobalPointer(file, dictionary, offset)
+                    //todo
+                    result.GLOBAL_POINTER = await dictionaryGlobalPointer(file, dictionary, result.SECTION)
                 } else if (index === 9) {
-                    result.THREAD_LOCAL = await dictionaryThreadLocal(file, dictionary, offset)
+                    //todo
+                    result.THREAD_LOCAL = await dictionaryThreadLocal(file, dictionary, result.SECTION)
                 } else if (index === 10) {
-                    result.LOAD_CONFIG = await dictionaryLoadConfig(file, dictionary, offset)
+                    //todo
+                    result.LOAD_CONFIG = await dictionaryLoadConfig(file, dictionary, result.SECTION)
                 } else if (index === 11) {
-                    result.BOUND_IMPORT = await dictionaryBoundImport(file, dictionary, offset)
+                    //todo
+                    result.BOUND_IMPORT = await dictionaryBoundImport(file, dictionary, result.SECTION)
                 } else if (index === 12) {
-                    result.IMPORT_ADDRESS = await dictionaryImportAddress(file, dictionary, offset)
+                    //todo
+                    result.IMPORT_ADDRESS = await dictionaryImportAddress(file, dictionary, result.SECTION)
                 } else if (index === 13) {
-                    result.DELAY_IMPORT = await dictionaryDelayImport(file, dictionary, offset)
+                    //todo
+                    result.DELAY_IMPORT = await dictionaryDelayImport(file, dictionary, result.SECTION)
                 } else if (index === 14) {
-                    result.COM_DESCRIPTOR = await dictionaryComDescriptor(file, dictionary, offset)
+                    //todo
+                    result.COM_DESCRIPTOR = await dictionaryComDescriptor(file, dictionary, result.SECTION)
                 }
             }
         }

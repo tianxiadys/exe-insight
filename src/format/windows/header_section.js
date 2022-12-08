@@ -1,9 +1,6 @@
-import { readString8 } from './common_string.js'
-
 export async function headerSection(file, offset, size) {
     //初始化
     let resultList = []
-    resultList.translate = sectionTranslate
     //循环读取
     for (let index = 0; index < size; index++) {
         //初始化
@@ -25,15 +22,34 @@ export async function headerSection(file, offset, size) {
         //添加到结果数组
         resultList.push(section)
     }
+    //转换指针类型
+    resultList.translate = function(pointer) {
+        for (let section of this) {
+            if (section.VirtualAddress <= pointer && section.VirtualAddress + section.VirtualSize > pointer) {
+                return pointer - section.VirtualAddress + section.PointerToRawData
+            }
+        }
+        throw Error('cannot translate pointer')
+    }
+    resultList.string = function(pointer, wide, max) {
+        //初始化结果数组
+        let result = []
+
+        let offset = this.translate(pointer)
+
+        //循环读取缓冲区
+        let array = new Uint16Array(buffer, offset, maxChar * 2)
+        for (let code of array) {
+            if (code > 0) {
+                result.push(code)
+            } else {
+                break
+            }
+        }
+
+        //创建字符串
+        return String.fromCharCode(...result)
+    }
     //返回
     return resultList
-}
-
-function sectionTranslate(pointer) {
-    for (let section of this) {
-        if (section.VirtualAddress <= pointer && section.VirtualAddress + section.VirtualSize > pointer) {
-            return pointer - section.VirtualAddress + section.PointerToRawData
-        }
-    }
-    throw Error('cannot translate pointer')
 }

@@ -17,6 +17,9 @@ export async function dictionaryExport(file, dictionary, section) {
     result.AddressOfFunctions = view.getUint32(28, true)
     result.AddressofNames = view.getUint32(32, true)
     result.AddressOfNameOrdinals = view.getUint32(36, true)
+
+    let nameOffset = section.translate(result.Name)
+
     //返回
     return result
 }

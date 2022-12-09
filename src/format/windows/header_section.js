@@ -8,7 +8,7 @@ export default async function(image, offset, count) {
         let section = {}
         //读取结构
         section.Index = index
-        section.Name = image.bufferToString(view.buffer, 0, 8, false)
+        section.Name = image.bufferToString(view.buffer, false, 0, 8)
         section.VirtualSize = view.getUint32(8, true)
         section.VirtualAddress = view.getUint32(12, true)
         section.SizeOfRawData = view.getUint32(16, true)

@@ -73,10 +73,10 @@ export default class WindowsImage {
         }
     }
 
-    bufferToString(buffer, offset, max, wide) {
+    bufferToString(buffer, wide, offset, max) {
         let result
         if (wide) {
-            result = new Uint16Array(buffer, offset, max * 2)
+            result = new Uint16Array(buffer, offset, max)
         } else {
             result = new Uint8Array(buffer, offset, max)
         }
@@ -97,27 +97,25 @@ export default class WindowsImage {
         return new DataView(buffer)
     }
 
-    pointerToOffset(pointer) {
+    async pointerToSection(pointer) {
         for (let section of this.SECTION) {
             if (section.VirtualAddress <= pointer && section.VirtualAddress + section.VirtualSize > pointer) {
-                return pointer - section.VirtualAddress + section.PointerToRawData
+                if (!section.BUFFER) {
+                    section.BUFFER = await this.offsetToBuffer(section.PointerToRawData, section.SizeOfRawData)
+                }
+                return section
             }
         }
-        throw Error('pointer error')
-    }
-
-    async pointerToBuffer(pointer, size) {
-        let offset = this.pointerToOffset(pointer)
-        return this.offsetToBuffer(offset, size)
+        throw Error('section error')
     }
 
     async pointerToView(pointer, size) {
-        let buffer = await this.pointerToBuffer(pointer, size)
-        return new DataView(buffer)
+        let section = await this.pointerToSection(pointer)
+        return new DataView(section.BUFFER, pointer - section.VirtualAddress, size)
     }
 
-    async pointerToString(pointer, max, wide) {
-        let buffer = await this.pointerToBuffer(pointer, wide ? max * 2 : max)
-        return this.bufferToString(buffer, 0, max, wide)
+    async pointerToString(pointer, wide, max) {
+        let section = await this.pointerToSection(pointer)
+        return this.bufferToString(section.BUFFER, wide, pointer - section.VirtualAddress, max)
     }
 }

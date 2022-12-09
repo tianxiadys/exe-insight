@@ -1,10 +1,10 @@
-export default async function(windows, offset, count) {
+export default async function(image, offset, count) {
     //初始化
     let dictionaryList = []
     //循环读取
     for (let index = 0; index < count; index++) {
         //初始化
-        let view = await windows.offsetToView(offset + index * 8, 8)
+        let view = await image.offsetToView(offset + index * 8, 8)
         let dictionary = {}
         //读取结构
         dictionary.VritualAddress = view.getUint32(0, true)

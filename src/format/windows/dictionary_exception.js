@@ -1,2 +1,2 @@
-export default async function(windows, dictionary) {
+export default async function(image, dictionary) {
 }

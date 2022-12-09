@@ -1,6 +1,6 @@
-export default async function(windows, offset) {
+export default async function(image, offset) {
     //初始化
-    let view = await windows.offsetToView(offset, 20)
+    let view = await image.offsetToView(offset, 20)
     let result = {}
     //读取结构
     result.Machine = view.getUint16(0, true)

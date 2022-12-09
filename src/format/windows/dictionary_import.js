@@ -1,6 +1,6 @@
-export default async function(windows, dictionary) {
+export default async function(image, dictionary) {
     //初始化
-    let view = await windows.pointerToView(dictionary.VritualAddress, 20)
+    let view = await image.pointerToView(dictionary.VritualAddress, 20)
     let result = {}
     //读取结构
     result.OriginalFirstThunk = view.getUint32(0, true)

@@ -1,13 +1,13 @@
-export default async function(windows, offset, count) {
+export default async function(image, offset, count) {
     //初始化
     let sectionList = []
     //循环读取
     for (let index = 0; index < count; index++) {
         //初始化
-        let view = await windows.offsetToView(offset + index * 40, 40)
+        let view = await image.offsetToView(offset + index * 40, 40)
         let section = {}
         //读取结构
-        section.Name = windows.viewToString(view, 0, 8, false)
+        // section.Name = image.viewToString(view, 0, 8, false)
         section.VirtualSize = view.getUint32(8, true)
         section.VirtualAddress = view.getUint32(12, true)
         section.SizeOfRawData = view.getUint32(16, true)

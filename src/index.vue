@@ -1,7 +1,7 @@
 <template>
 </template>
 <script>
-import { headerDOS } from './format/windows/header_dos.js'
+import WindowsImage from './format/windows/image.js'
 
 export default {
   mounted() {
@@ -13,7 +13,8 @@ export default {
 
       let file = event.dataTransfer.files.item(0)
 
-      let test1 = await headerDOS(file)
+      let test1 = new WindowsImage(file)
+      await test1.parse()
       console.log(test1)
     }
   }

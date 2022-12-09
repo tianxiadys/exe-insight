@@ -1,9 +1,6 @@
-export async function dictionaryExport(file, dictionary, section) {
+export default async function(windows, dictionary) {
     //初始化
-    let offset = section.convert(dictionary.VritualAddress)
-    let blob = file.slice(offset, offset + 40)
-    let buffer = await blob.arrayBuffer()
-    let view = new DataView(buffer)
+    let view = await windows.pointerToView(dictionary.VritualAddress, 40)
     let result = {}
     //读取结构
     result.Charateristics = view.getUint32(0, true)

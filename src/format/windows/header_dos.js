@@ -1,18 +1,12 @@
-import { headerNT } from './header_nt.js'
-
-export async function headerDOS(file) {
+export default async function(windows) {
     //初始化
-    let blob = file.slice(0, 64)
-    let buffer = await blob.arrayBuffer()
-    let view = new DataView(buffer)
+    let view = await windows.offsetToView(offset, 64)
     let result = {}
     //读取结构
     result.Type = view.getUint16(0, true)
     result.LfaNew = view.getUint32(60, true)
     //检查类型
-    if (result.Type === 0x5A4D) {
-        result.NT = await headerNT(file, result.LfaNew)
-    } else {
+    if (result.Type !== 0x5A4D) {
         throw Error('not a dos file')
     }
     //返回

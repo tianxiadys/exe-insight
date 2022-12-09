@@ -1,2 +1,2 @@
-export async function dictionarySecurity(file, dictionary, offset) {
+export default async function(windows, dictionary) {
 }

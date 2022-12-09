@@ -1,2 +1,2 @@
-export async function dictionaryThreadLocal(file, dictionary, section) {
+export default async function(windows, dictionary) {
 }

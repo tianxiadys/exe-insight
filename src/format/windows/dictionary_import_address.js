@@ -1,2 +1,2 @@
-export async function dictionaryImportAddress(file, dictionary, offset) {
+export default async function(windows, dictionary) {
 }

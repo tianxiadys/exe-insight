@@ -1,8 +1,6 @@
-export async function headerCOFF(file, offset) {
+export default async function(windows, offset) {
     //初始化
-    let blob = file.slice(offset, offset + 20)
-    let buffer = await blob.arrayBuffer()
-    let view = new DataView(buffer)
+    let view = await windows.offsetToView(offset, 20)
     let result = {}
     //读取结构
     result.Machine = view.getUint16(0, true)

@@ -1,2 +1,2 @@
-export async function dictionaryBoundImport(file, dictionary, offset) {
+export default async function(windows, dictionary) {
 }

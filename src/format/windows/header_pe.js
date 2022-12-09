@@ -1,10 +1,6 @@
-import { headerDictionary } from './header_dictionary.js'
-
-export async function headerPE(file, offset, size) {
+export default async function(windows, offset, size) {
     //初始化
-    let blob = file.slice(offset, offset + size)
-    let buffer = await blob.arrayBuffer()
-    let view = new DataView(buffer)
+    let view = await windows.offsetToView(offset, size)
     let result = {}
     //读取结构
     result.Magic = view.getUint16(0, true)
@@ -39,7 +35,6 @@ export async function headerPE(file, offset, size) {
         result.SizeOfHeapCommit = view.getUint32(84, true)
         result.LoaderFlags = view.getUint32(88, true)
         result.NumberOfRvaAndSizes = view.getUint32(92, true)
-        result.DICTIONARY = await headerDictionary(file, offset + 96, result.NumberOfRvaAndSizes)
     } else if (result.Magic === 0x20B) {
         result.ImageBase = view.getBigUint64(24, true)
         result.SizeOfStackReserve = view.getBigUint64(72, true)
@@ -48,7 +43,6 @@ export async function headerPE(file, offset, size) {
         result.SizeOfHeapCommit = view.getBigUint64(96, true)
         result.LoaderFlags = view.getUint32(104, true)
         result.NumberOfRvaAndSizes = view.getUint32(108, true)
-        result.DICTIONARY = await headerDictionary(file, offset + 112, result.NumberOfRvaAndSizes)
     } else {
         throw Error('not a pe file')
     }

@@ -29,6 +29,7 @@ export default async function(image, dictionary) {
     }
     for (let index = 0; index < result.NumberOfFunctions; index++) {
         let item = {}
+        item.Index = result.Base + index
         item.Address = AddressView.getUint32(index * 4, true)
         item.Name = NameMap.get(index)
         result.RESULT.push(item)

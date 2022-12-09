@@ -44,7 +44,7 @@ export default async function(image, offset, size) {
         result.LoaderFlags = view.getUint32(104, true)
         result.NumberOfRvaAndSizes = view.getUint32(108, true)
     } else {
-        throw Error('not a pe file')
+        throw Error('pe mark error')
     }
     //返回
     return result

@@ -31,109 +31,93 @@ export default class WindowsImage {
         this.COFF = await headerCOFF(this, this.DOS.LfaNew + 4)
         this.PE = await headerPE(this, this.DOS.LfaNew + 24, this.COFF.SizeOfOptionalHeader)
         this.SECTION = await headerSection(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader + 24, this.COFF.NumberOfSections)
+        if (this.PE.Magic === 0x10B) {
+            this.DICTIONARY = await headerDictionary(this, this.DOS.LfaNew + 120, this.PE.NumberOfRvaAndSizes)
+        } else if (this.PE.Magic === 0x20B) {
+            this.DICTIONARY = await headerDictionary(this, this.DOS.LfaNew + 136, this.PE.NumberOfRvaAndSizes)
+        }
+        for (let dictionary of this.DICTIONARY) {
+            if (dictionary.VritualAddress > 0) {
+                if (dictionary.Index === 0) {
+                    this.EXPORT = await dictionaryExport(this, dictionary)
+                } else if (dictionary.Index === 1) {
+                    this.IMPORT = await dictionaryImport(this, dictionary)
+                } else if (dictionary.Index === 2) {
+                    this.RESOURCE = await dictionaryResource(this, dictionary)
+                } else if (dictionary.Index === 3) {
+                    this.EXCEPTION = await dictionaryException(this, dictionary)
+                } else if (dictionary.Index === 4) {
+                    this.SECURITY = await dictionarySecurity(this, dictionary)
+                } else if (dictionary.Index === 5) {
+                    this.BASE_RELOCATION = await dictionaryBaseRelocation(this, dictionary)
+                } else if (dictionary.Index === 6) {
+                    this.DEBUG = await dictionaryDebug(this, dictionary)
+                } else if (dictionary.Index === 7) {
+                    this.ARCHITECTURE = await dictionaryArchitecture(this, dictionary)
+                } else if (dictionary.Index === 8) {
+                    this.GLOBAL_POINTER = await dictionaryGlobalPointer(this, dictionary)
+                } else if (dictionary.Index === 9) {
+                    this.THREAD_LOCAL = await dictionaryThreadLocal(this, dictionary)
+                } else if (dictionary.Index === 10) {
+                    this.LOAD_CONFIG = await dictionaryLoadConfig(this, dictionary)
+                } else if (dictionary.Index === 11) {
+                    this.BOUND_IMPORT = await dictionaryBoundImport(this, dictionary)
+                } else if (dictionary.Index === 12) {
+                    this.IMPORT_ADDRESS = await dictionaryImportAddress(this, dictionary)
+                } else if (dictionary.Index === 13) {
+                    this.DELAY_IMPORT = await dictionaryDelayImport(this, dictionary)
+                } else if (dictionary.Index === 14) {
+                    this.COM_DESCRIPTOR = await dictionaryComDescriptor(this, dictionary)
+                }
+            }
+        }
+    }
+
+    bufferToString(buffer, offset, max, wide) {
+        let result
+        if (wide) {
+            result = new Uint16Array(buffer, offset, max * 2)
+        } else {
+            result = new Uint8Array(buffer, offset, max)
+        }
+        let end = result.indexOf(0)
+        if (end >= 0) {
+            result = result.subarray(0, end)
+        }
+        return String.fromCharCode(...result)
+    }
+
+    async offsetToBuffer(offset, size) {
+        let blob = this.file.slice(offset, offset + size)
+        return blob.arrayBuffer()
     }
 
     async offsetToView(offset, size) {
-        let blob = this.file.slice(offset, offset + size)
-        let buffer = await blob.arrayBuffer()
+        let buffer = await this.offsetToBuffer(offset, size)
         return new DataView(buffer)
     }
 
-    //
-    // bufferToString(buffer, offset, max, wide) {
-    //     //初始化
-    //     let result
-    //
-    //     //检查宽字符
-    //     if (wide) {
-    //         result = new Uint16Array(buffer, offset, max * 2)
-    //     } else {
-    //         result = new Uint8Array(buffer, offset, max)
-    //     }
-    //
-    //     //查找结束标记
-    //     let end = result.indexOf(0)
-    //     if (end >= 0) {
-    //         result = result.subarray(0, end)
-    //     }
-    //
-    //     //创建字符串
-    //     return String.fromCharCode(...result)
-    // }
-    //
-    // pointerToOffset(pointer) {
-    //     for (let section of this.SECTION) {
-    //         if (section.VirtualAddress <= pointer && section.VirtualAddress + section.VirtualSize > pointer) {
-    //             return pointer - section.VirtualAddress + section.PointerToRawData
-    //         }
-    //     }
-    //     throw Error('cannot convert pointer')
-    // }
-    //
-    // async pointerToBuffer(pointer, size) {
-    //     let offset = this.pointerToOffset(pointer)
-    //     let blob = this.file.slice(offset, offset + size)
-    //     return blob.arrayBuffer()
-    // }
-    //
-    // async pointerToString(pointer, max, wide) {
-    //     let buffer = await this.pointerToBuffer(pointer, wide ? max * 2 : max)
-    //     return this.bufferToString(buffer, 0, max, wide)
-    // }
+    pointerToOffset(pointer) {
+        for (let section of this.SECTION) {
+            if (section.VirtualAddress <= pointer && section.VirtualAddress + section.VirtualSize > pointer) {
+                return pointer - section.VirtualAddress + section.PointerToRawData
+            }
+        }
+        throw Error('pointer error')
+    }
+
+    async pointerToBuffer(pointer, size) {
+        let offset = this.pointerToOffset(pointer)
+        return this.offsetToBuffer(offset, size)
+    }
+
+    async pointerToView(pointer, size) {
+        let buffer = await this.pointerToBuffer(pointer, size)
+        return new DataView(buffer)
+    }
+
+    async pointerToString(pointer, max, wide) {
+        let buffer = await this.pointerToBuffer(pointer, wide ? max * 2 : max)
+        return this.bufferToString(buffer, 0, max, wide)
+    }
 }
-// //读取目录
-// for (let index = 0; index < 15; index++) {
-//     //查询目录
-//     let dictionary = result.PE.DICTIONARY[index]
-//     //检查有效
-//     if (dictionary.VritualAddress > 0) {
-//         if (index === 0) {
-//             //todo
-//             result.EXPORT = await dictionaryExport(file, dictionary, result.SECTION)
-//         } else if (index === 1) {
-//             //todo
-//             result.IMPORT = await dictionaryImport(file, dictionary, result.SECTION)
-//         } else if (index === 2) {
-//             //todo
-//             result.RESOURCE = await dictionaryResource(file, dictionary, result.SECTION)
-//         } else if (index === 3) {
-//             //todo
-//             result.EXCEPTION = await dictionaryException(file, dictionary, result.SECTION)
-//         } else if (index === 4) {
-//             //todo
-//             result.SECURITY = await dictionarySecurity(file, dictionary, result.SECTION)
-//         } else if (index === 5) {
-//             //todo
-//             result.BASE_RELOCATION = await dictionaryBaseRelocation(file, dictionary, result.SECTION)
-//         } else if (index === 6) {
-//             //todo
-//             result.DEBUG = await dictionaryDebug(file, dictionary, result.SECTION)
-//         } else if (index === 7) {
-//             //todo
-//             result.ARCHITECTURE = await dictionaryArchitecture(file, dictionary, result.SECTION)
-//         } else if (index === 8) {
-//             //todo
-//             result.GLOBAL_POINTER = await dictionaryGlobalPointer(file, dictionary, result.SECTION)
-//         } else if (index === 9) {
-//             //todo
-//             result.THREAD_LOCAL = await dictionaryThreadLocal(file, dictionary, result.SECTION)
-//         } else if (index === 10) {
-//             //todo
-//             result.LOAD_CONFIG = await dictionaryLoadConfig(file, dictionary, result.SECTION)
-//         } else if (index === 11) {
-//             //todo
-//             result.BOUND_IMPORT = await dictionaryBoundImport(file, dictionary, result.SECTION)
-//         } else if (index === 12) {
-//             //todo
-//             result.IMPORT_ADDRESS = await dictionaryImportAddress(file, dictionary, result.SECTION)
-//         } else if (index === 13) {
-//             //todo
-//             result.DELAY_IMPORT = await dictionaryDelayImport(file, dictionary, result.SECTION)
-//         } else if (index === 14) {
-//             //todo
-//             result.COM_DESCRIPTOR = await dictionaryComDescriptor(file, dictionary, result.SECTION)
-//         }
-//     }
-// }
-// result.DICTIONARY = await headerDictionary(file, offset + 96, result.NumberOfRvaAndSizes)
-// result.DICTIONARY = await headerDictionary(file, offset + 112, result.NumberOfRvaAndSizes)

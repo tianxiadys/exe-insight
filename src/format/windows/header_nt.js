@@ -6,7 +6,7 @@ export default async function(image, offset) {
     result.Type = view.getUint32(0, true)
     //检查类型
     if (result.Type !== 0x4550) {
-        throw Error('not a pe file')
+        throw Error('nt mark error')
     }
     //返回
     return result

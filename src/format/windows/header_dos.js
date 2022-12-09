@@ -7,7 +7,7 @@ export default async function(image) {
     result.LfaNew = view.getUint32(60, true)
     //检查类型
     if (result.Type !== 0x5A4D) {
-        throw Error('not a dos file')
+        throw Error('dos mark error')
     }
     //返回
     return result

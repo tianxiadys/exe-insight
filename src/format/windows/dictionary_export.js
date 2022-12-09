@@ -14,6 +14,8 @@ export default async function(image, dictionary) {
     result.AddressOfFunctions = view.getUint32(28, true)
     result.AddressofNames = view.getUint32(32, true)
     result.AddressOfNameOrdinals = view.getUint32(36, true)
+    //解析目录
+    result.NameString = await image.pointerToString(result.Name, 260, false)
     //返回
     return result
 }

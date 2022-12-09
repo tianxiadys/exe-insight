@@ -7,6 +7,7 @@ export default async function(image, offset, count) {
         let view = await image.offsetToView(offset + index * 8, 8)
         let dictionary = {}
         //读取结构
+        dictionary.Index = index
         dictionary.VritualAddress = view.getUint32(0, true)
         dictionary.Size = view.getUint32(4, true)
         //添加到结果数组

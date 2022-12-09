@@ -1,6 +1,6 @@
 export async function dictionaryExport(file, dictionary, section) {
     //初始化
-    let offset = section.translate(dictionary.VritualAddress)
+    let offset = section.convert(dictionary.VritualAddress)
     let blob = file.slice(offset, offset + 40)
     let buffer = await blob.arrayBuffer()
     let view = new DataView(buffer)
@@ -17,9 +17,6 @@ export async function dictionaryExport(file, dictionary, section) {
     result.AddressOfFunctions = view.getUint32(28, true)
     result.AddressofNames = view.getUint32(32, true)
     result.AddressOfNameOrdinals = view.getUint32(36, true)
-
-    let nameOffset = section.translate(result.Name)
-
     //返回
     return result
 }

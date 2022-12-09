@@ -1,6 +1,6 @@
 export async function dictionaryImport(file, dictionary, section) {
     //初始化
-    let offset = section.translate(dictionary.VritualAddress)
+    let offset = section.convert(dictionary.VritualAddress)
     let blob = file.slice(offset, offset + 20)
     let buffer = await blob.arrayBuffer()
     let view = new DataView(buffer)

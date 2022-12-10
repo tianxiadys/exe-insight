@@ -27,7 +27,6 @@ export default async function(image, offset, size) {
     result.DllCharacteristics = view.getUint16(70, true)
     //检查类型
     if (result.Magic === 0x10B) {
-        image.BITS = 32
         result.BaseOfData = view.getUint32(24, true)
         result.ImageBase = view.getUint32(28, true)
         result.SizeOfStackReserve = view.getUint32(72, true)
@@ -37,7 +36,6 @@ export default async function(image, offset, size) {
         result.LoaderFlags = view.getUint32(88, true)
         result.NumberOfRvaAndSizes = view.getUint32(92, true)
     } else if (result.Magic === 0x20B) {
-        image.BITS = 64
         result.ImageBase = view.getBigUint64(24, true)
         result.SizeOfStackReserve = view.getBigUint64(72, true)
         result.SizeOfStackCommit = view.getBigUint64(80, true)

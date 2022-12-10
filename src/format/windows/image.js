@@ -30,12 +30,8 @@ export default class WindowsImage {
         this.NT = await headerNT(this, this.DOS.LfaNew)
         this.COFF = await headerCOFF(this, this.DOS.LfaNew + 4)
         this.PE = await headerPE(this, this.DOS.LfaNew + 24, this.COFF.SizeOfOptionalHeader)
+        this.DICTIONARY = await headerDictionary(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader - this.PE.NumberOfRvaAndSizes * 8 + 24, this.PE.NumberOfRvaAndSizes)
         this.SECTION = await headerSection(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader + 24, this.COFF.NumberOfSections)
-        if (this.PE.Magic === 0x10B) {
-            this.DICTIONARY = await headerDictionary(this, this.DOS.LfaNew + 120, this.PE.NumberOfRvaAndSizes)
-        } else if (this.PE.Magic === 0x20B) {
-            this.DICTIONARY = await headerDictionary(this, this.DOS.LfaNew + 136, this.PE.NumberOfRvaAndSizes)
-        }
         for (let dictionary of this.DICTIONARY) {
             if (dictionary.VritualAddress > 0) {
                 if (dictionary.Index === 0) {

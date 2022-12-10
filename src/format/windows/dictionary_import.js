@@ -22,7 +22,7 @@ export default async function(image, dictionary) {
         result.RESULT = []
         //处理内容
         let thunkView = await image.pointerToView(result.FirstThunk)
-        if (image.PE.Magic === 0x10B) {
+        if (image.BITS === 32) {
             for (let index2 = 0; ; index2++) {
                 let item = {}
                 let thunkItem = thunkView.getUint32(index2 * 4, true)
@@ -37,7 +37,7 @@ export default async function(image, dictionary) {
                 }
                 result.RESULT.push(item)
             }
-        } else if (image.PE.Magic === 0x20B) {
+        } else if (image.BITS === 64) {
             for (let index2 = 0; ; index2++) {
                 let item = {}
                 let thunkItem = thunkView.getBigUint64(index2 * 8, true)

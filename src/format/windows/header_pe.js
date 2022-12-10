@@ -1,8 +1,6 @@
 export default async function(image, offset, size) {
-    //初始化
     let view = await image.offsetToView(offset, size)
     let result = {}
-    //读取结构
     result.Magic = view.getUint16(0, true)
     result.MajorLinkerVersion = view.getUint8(2)
     result.MinorLinkerVersion = view.getUint8(3)
@@ -25,7 +23,6 @@ export default async function(image, offset, size) {
     result.CheckSum = view.getUint32(64, true)
     result.Subsystem = view.getUint16(68, true)
     result.DllCharacteristics = view.getUint16(70, true)
-    //检查类型
     if (result.Magic === 0x10B) {
         result.BaseOfData = view.getUint32(24, true)
         result.ImageBase = view.getUint32(28, true)
@@ -44,8 +41,7 @@ export default async function(image, offset, size) {
         result.LoaderFlags = view.getUint32(104, true)
         result.NumberOfRvaAndSizes = view.getUint32(108, true)
     } else {
-        throw Error('pe mark error')
+        throw 'cannot found pe mark'
     }
-    //返回
     return result
 }

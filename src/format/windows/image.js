@@ -17,7 +17,6 @@ import dictionaryThreadLocal from './dictionary_thread_local.js'
 import dictionaryLoadConfig from './dictionary_load_config.js'
 import dictionaryBoundImport from './dictionary_bound_import.js'
 import dictionaryImportAddress from './dictionary_import_address.js'
-import dictionaryDelayImport from './dictionary_delay_import.js'
 import dictionaryComDescriptor from './dictionary_com_descriptor.js'
 
 export default class WindowsImage {
@@ -42,7 +41,8 @@ export default class WindowsImage {
                 if (dictionary.Index === 0) {
                     this.EXPORT = await dictionaryExport(this, dictionary)
                 } else if (dictionary.Index === 1) {
-                    this.IMPORT = await dictionaryImport(this, dictionary)
+                    //与延迟import共享代码
+                    this.IMPORT = await dictionaryImport(this, dictionary, false)
                 } else if (dictionary.Index === 2) {
                     this.RESOURCE = await dictionaryResource(this, dictionary)
                 } else if (dictionary.Index === 3) {
@@ -66,7 +66,8 @@ export default class WindowsImage {
                 } else if (dictionary.Index === 12) {
                     this.IMPORT_ADDRESS = await dictionaryImportAddress(this, dictionary)
                 } else if (dictionary.Index === 13) {
-                    this.DELAY_IMPORT = await dictionaryDelayImport(this, dictionary)
+                    //与普通import共享代码
+                    this.DELAY_IMPORT = await dictionaryImport(this, dictionary, true)
                 } else if (dictionary.Index === 14) {
                     this.COM_DESCRIPTOR = await dictionaryComDescriptor(this, dictionary)
                 }

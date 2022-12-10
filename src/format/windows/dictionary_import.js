@@ -22,19 +22,37 @@ export default async function(image, dictionary) {
         result.RESULT = []
         //处理内容
         let thunkView = await image.pointerToView(result.FirstThunk)
-        for (let index2 = 0; ; index2++) {
-            let item = {}
-            let unionData = thunkView.getUint32(index2 * 4, true)
-            if (unionData === 0) {
-                break
-            } else if (unionData & 0x80000000) {
-                item.Index = index2
-                item.Ordinal = unionData & 0x7FFFFFFF
-            } else {
-                item.Index = index2
-                item.Name = await image.pointerToString(unionData + 2, false)
+        if (image.PE.Magic === 0x10B) {
+            for (let index2 = 0; ; index2++) {
+                let item = {}
+                let thunkItem = thunkView.getUint32(index2 * 4, true)
+                if (thunkItem === 0) {
+                    break
+                } else if (thunkItem > 0x80000000) {
+                    item.Index = index2
+                    item.Ordinal = thunkItem & 0xFFFF
+                } else {
+                    item.Index = index2
+                    item.Name = await image.pointerToString(thunkItem + 2, false)
+                }
+                result.RESULT.push(item)
             }
-            result.RESULT.push(item)
+        } else if (image.PE.Magic === 0x20B) {
+            for (let index2 = 0; ; index2++) {
+                let item = {}
+                let thunkItem = thunkView.getBigUint64(index2 * 8, true)
+                if (thunkItem === 0n) {
+                    break
+                } else if (thunkItem > 0x8000000000000000n) {
+                    item.Index = index2
+                    item.Ordinal = Number(thunkItem & 0xFFFFn)
+                } else {
+                    let pointer = Number(thunkItem + 2n)
+                    item.Index = index2
+                    item.Name = await image.pointerToString(pointer, false)
+                }
+                result.RESULT.push(item)
+            }
         }
         //添加到结果数组
         resultList.push(result)

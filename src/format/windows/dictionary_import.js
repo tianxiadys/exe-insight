@@ -21,7 +21,7 @@ export default async function(image, dictionary) {
         result.NameString = await image.pointerToString(result.Name, false)
         result.RESULT = []
         //处理内容
-        let thunkView = await image.pointerToView(result.FirstThunk)
+        let thunkView = await image.pointerToView(result.OriginalFirstThunk || result.FirstThunk)
         if (image.BITS === 32) {
             for (let index2 = 0; ; index2++) {
                 let item = {}

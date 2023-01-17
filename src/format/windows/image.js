@@ -38,10 +38,10 @@ export default class WindowsImage {
                     this.EXPORT = await dictionaryExport.parse(this, dictionary)
                     break
                 case 1:
-                    this.IMPORT = await dictionaryImport.parseNormal(this, dictionary, false)
+                    this.IMPORT = await dictionaryImport.parseNormal(this, dictionary)
                     break
                 case 2:
-                    this.RESOURCE = await dictionaryResource.parse(this, dictionary)
+                    this.RESOURCE = await dictionaryResource.parse(this, dictionary, 0)
                     break
                 case 3:
                     this.EXCEPTION = await dictionaryException.parse(this, dictionary)
@@ -74,7 +74,7 @@ export default class WindowsImage {
                     this.IMPORT_ADDRESS = await dictionaryImportAddress.parse(this, dictionary)
                     break
                 case 13:
-                    this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary, true)
+                    this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary)
                     break
                 case 14:
                     this.COM_DESCRIPTOR = await dictionaryComDescriptor.parse(this, dictionary)

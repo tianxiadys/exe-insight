@@ -15,7 +15,7 @@ export default class {
         result.AddressOfNameOrdinals = view.getUint32(36, true)
         //实际解释
         result.NameString = await image.pointerToString(result.Name, false)
-        result.RESULT = await this.#exportList(image, result)
+        result.LIST = await this.#exportList(image, result)
         return result
     }
 

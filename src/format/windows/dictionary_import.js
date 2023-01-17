@@ -16,7 +16,7 @@ export default class {
             }
             //实际解释
             result.NameString = await image.pointerToString(result.Name, false)
-            result.RESULT = await this.#importList(image, result)
+            result.LIST = await this.#importList(image, result)
             resultList.push(result)
         }
         return resultList
@@ -24,10 +24,10 @@ export default class {
 
     static async parseDelay(image, dictionary) {
         let resultList = []
-        for (let index1 = 0; ; index1++) {
-            let view = await image.pointerToView(dictionary.VritualAddress + index1 * 32, 32)
+        for (let index = 0; ; index++) {
+            let view = await image.pointerToView(dictionary.VritualAddress + index * 32, 32)
             let result = {}
-            result.Index = index1
+            result.Index = index
             result.Characteristics = view.getUint32(0, true)
             result.Name = view.getUint32(4, true)
             result.ModuleHandle = view.getUint32(8, true)
@@ -42,7 +42,7 @@ export default class {
             }
             //实际解释
             result.NameString = await image.pointerToString(result.Name, false)
-            result.RESULT = await this.#importList(image, result)
+            result.LIST = await this.#importList(image, result)
             resultList.push(result)
         }
         return resultList
@@ -60,17 +60,16 @@ export default class {
 
     static async #importList32(image, view) {
         let itemList = []
-        for (let index2 = 0; ; index2++) {
+        for (let index = 0; ; index++) {
             let item = {}
-            let thunkItem = view.getUint32(index2 * 4, true)
-            if (thunkItem === 0) {
+            item.Index = index
+            let union = view.getUint32(index * 4, true)
+            if (union === 0) {
                 break
-            } else if (thunkItem > 0x80000000) {
-                item.Index = index2
-                item.Ordinal = thunkItem & 0xFFFF
+            } else if (union > 0x80000000) {
+                item.Ordinal = union & 0xFFFF
             } else {
-                item.Index = index2
-                item.Name = await image.pointerToString(thunkItem + 2, false)
+                item.Name = await image.pointerToString(union + 2, false)
             }
             itemList.push(item)
         }
@@ -79,17 +78,16 @@ export default class {
 
     static async #importList64(image, view) {
         let itemList = []
-        for (let index2 = 0; ; index2++) {
+        for (let index = 0; ; index++) {
             let item = {}
-            let thunkItem = view.getBigUint64(index2 * 8, true)
-            if (thunkItem === 0n) {
+            item.Index = index
+            let union = view.getBigUint64(index * 8, true)
+            if (union === 0n) {
                 break
-            } else if (thunkItem > 0x80000000n) {
-                item.Index = index2
-                item.Ordinal = Number(thunkItem & 0xFFFFn)
+            } else if (union > 0x80000000n) {
+                item.Ordinal = Number(union & 0xFFFFn)
             } else {
-                let pointer = Number(thunkItem + 2n)
-                item.Index = index2
+                let pointer = Number(union + 2n)
                 item.Name = await image.pointerToString(pointer, false)
             }
             itemList.push(item)

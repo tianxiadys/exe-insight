@@ -42,7 +42,7 @@ export default class {
             result.LoaderFlags = view.getUint32(104, true)
             result.NumberOfRvaAndSizes = view.getUint32(108, true)
         } else {
-            throw 'cannot found pe mark'
+            throw 'unknown pe mark'
         }
         return result
     }
@@ -53,7 +53,7 @@ export default class {
         } else if (result.Magic === 0x20B) {
             return 64
         } else {
-            throw 'cannot found pe mark'
+            throw 'unknown pe mark'
         }
     }
 }

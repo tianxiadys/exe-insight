@@ -5,7 +5,7 @@ export default class {
         result.Type = view.getUint16(0, true)
         result.LfaNew = view.getUint32(60, true)
         if (result.Type !== 0x5A4D) {
-            throw 'cannot found dos mark'
+            throw 'unknown dos mark'
         }
         return result
     }

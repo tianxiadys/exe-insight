@@ -4,7 +4,7 @@ export default class {
         let result = {}
         result.Type = view.getUint32(0, true)
         if (result.Type !== 0x4550) {
-            throw 'cannot found nt mark'
+            throw 'unknown nt mark'
         }
         return result
     }

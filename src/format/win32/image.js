@@ -16,7 +16,6 @@ import dictionaryGlobalPointer from './dictionary_global_pointer.js'
 import dictionaryThreadLocal from './dictionary_thread_local.js'
 import dictionaryLoadConfig from './dictionary_load_config.js'
 import dictionaryBoundImport from './dictionary_bound_import.js'
-import dictionaryImportAddress from './dictionary_import_address.js'
 import dictionaryComDescriptor from './dictionary_com_descriptor.js'
 
 export default class WindowsImage {
@@ -70,9 +69,7 @@ export default class WindowsImage {
                 case 11:
                     this.BOUND_IMPORT = await dictionaryBoundImport.parse(this, dictionary)
                     break
-                case 12:
-                    this.IMPORT_ADDRESS = await dictionaryImportAddress.parse(this, dictionary)
-                    break
+                //case 12 IAT表包含在IMPORT表中，无法独立存在
                 case 13:
                     this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary)
                     break

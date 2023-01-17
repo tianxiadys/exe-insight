@@ -25,52 +25,60 @@ export default class WindowsImage {
     }
 
     async parse() {
-        this.DOS = await headerDOS(this)
-        this.NT = await headerNT(this, this.DOS.LfaNew)
-        this.COFF = await headerCOFF(this, this.DOS.LfaNew + 4)
-        this.PE = await headerPE(this, this.DOS.LfaNew + 24, this.COFF.SizeOfOptionalHeader)
-        this.DICTIONARY = await headerDictionary(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader - this.PE.NumberOfRvaAndSizes * 8 + 24, this.PE.NumberOfRvaAndSizes)
-        this.SECTION = await headerSection(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader + 24, this.COFF.NumberOfSections)
-        if (this.PE.Magic === 0x10B) {
-            this.BITS = 32
-        } else if (this.PE.Magic === 0x20B) {
-            this.BITS = 64
-        }
+        this.DOS = await headerDOS.parse(this)
+        this.NT = await headerNT.parse(this, this.DOS.LfaNew)
+        this.COFF = await headerCOFF.parse(this, this.DOS.LfaNew + 4)
+        this.PE = await headerPE.parse(this, this.DOS.LfaNew + 24, this.COFF.SizeOfOptionalHeader)
+        this.BITS = headerPE.parseBits(this.PE)
+        this.DICTIONARY = await headerDictionary.parse(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader - this.PE.NumberOfRvaAndSizes * 8 + 24, this.PE.NumberOfRvaAndSizes)
+        this.SECTION = await headerSection.parse(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader + 24, this.COFF.NumberOfSections)
         for (let dictionary of this.DICTIONARY) {
-            if (dictionary.VritualAddress > 0) {
-                if (dictionary.Index === 0) {
-                    this.EXPORT = await dictionaryExport(this, dictionary)
-                } else if (dictionary.Index === 1) {
-                    //与延迟import共享代码
-                    this.IMPORT = await dictionaryImport(this, dictionary, false)
-                } else if (dictionary.Index === 2) {
-                    this.RESOURCE = await dictionaryResource(this, dictionary)
-                } else if (dictionary.Index === 3) {
-                    this.EXCEPTION = await dictionaryException(this, dictionary)
-                } else if (dictionary.Index === 4) {
-                    this.SECURITY = await dictionarySecurity(this, dictionary)
-                } else if (dictionary.Index === 5) {
-                    this.BASE_RELOCATION = await dictionaryBaseRelocation(this, dictionary)
-                } else if (dictionary.Index === 6) {
-                    this.DEBUG = await dictionaryDebug(this, dictionary)
-                } else if (dictionary.Index === 7) {
-                    this.ARCHITECTURE = await dictionaryArchitecture(this, dictionary)
-                } else if (dictionary.Index === 8) {
-                    this.GLOBAL_POINTER = await dictionaryGlobalPointer(this, dictionary)
-                } else if (dictionary.Index === 9) {
-                    this.THREAD_LOCAL = await dictionaryThreadLocal(this, dictionary)
-                } else if (dictionary.Index === 10) {
-                    this.LOAD_CONFIG = await dictionaryLoadConfig(this, dictionary)
-                } else if (dictionary.Index === 11) {
-                    this.BOUND_IMPORT = await dictionaryBoundImport(this, dictionary)
-                } else if (dictionary.Index === 12) {
-                    this.IMPORT_ADDRESS = await dictionaryImportAddress(this, dictionary)
-                } else if (dictionary.Index === 13) {
-                    //与普通import共享代码
-                    this.DELAY_IMPORT = await dictionaryImport(this, dictionary, true)
-                } else if (dictionary.Index === 14) {
-                    this.COM_DESCRIPTOR = await dictionaryComDescriptor(this, dictionary)
-                }
+            switch (dictionary.Index) {
+                case 0:
+                    this.EXPORT = await dictionaryExport.parse(this, dictionary)
+                    break
+                case 1:
+                    this.IMPORT = await dictionaryImport.parseNormal(this, dictionary, false)
+                    break
+                case 2:
+                    this.RESOURCE = await dictionaryResource.parse(this, dictionary)
+                    break
+                case 3:
+                    this.EXCEPTION = await dictionaryException.parse(this, dictionary)
+                    break
+                case 4:
+                    this.SECURITY = await dictionarySecurity.parse(this, dictionary)
+                    break
+                case 5:
+                    this.BASE_RELOCATION = await dictionaryBaseRelocation.parse(this, dictionary)
+                    break
+                case 6:
+                    this.DEBUG = await dictionaryDebug.parse(this, dictionary)
+                    break
+                case 7:
+                    this.ARCHITECTURE = await dictionaryArchitecture.parse(this, dictionary)
+                    break
+                case 8:
+                    this.GLOBAL_POINTER = await dictionaryGlobalPointer.parse(this, dictionary)
+                    break
+                case 9:
+                    this.THREAD_LOCAL = await dictionaryThreadLocal.parse(this, dictionary)
+                    break
+                case 10:
+                    this.LOAD_CONFIG = await dictionaryLoadConfig.parse(this, dictionary)
+                    break
+                case 11:
+                    this.BOUND_IMPORT = await dictionaryBoundImport.parse(this, dictionary)
+                    break
+                case 12:
+                    this.IMPORT_ADDRESS = await dictionaryImportAddress.parse(this, dictionary)
+                    break
+                case 13:
+                    this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary, true)
+                    break
+                case 14:
+                    this.COM_DESCRIPTOR = await dictionaryComDescriptor.parse(this, dictionary)
+                    break
             }
         }
     }
@@ -108,7 +116,7 @@ export default class WindowsImage {
                 return section
             }
         }
-        throw Error('section error')
+        throw 'pointer out of bound'
     }
 
     async pointerToView(pointer, size) {

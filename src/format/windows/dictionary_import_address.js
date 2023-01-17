@@ -1,3 +1,5 @@
-export default async function(image, dictionary) {
-    //todo
+export default class {
+    static async parse(image, dictionary) {
+        //todo
+    }
 }

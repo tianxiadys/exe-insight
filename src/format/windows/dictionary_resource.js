@@ -1,6 +1,6 @@
 export default class {
     static async parse(image, dictionary, offset) {
-        let view = await image.pointerToView(dictionary.VritualAddress, 16)
+        let view = await image.pointerToView(dictionary.VritualAddress + offset, 16)
         let result = {}
         result.Characteristics = view.getUint32(0, true)
         result.TimeDateStamp = view.getUint32(4, true)
@@ -43,12 +43,12 @@ export default class {
     }
 
     static async #resourceData(image, dictionary, offset) {
-        // let view = await image.pointerToView(dictionary.VritualAddress + offset, 16)
-        // let result = {}
-        // result.OffsetToData = view.getUint32(0, true)
-        // result.Size = view.getUint32(4, true)
-        // result.CodePage = view.getUint32(8, true)
-        // result.Reserved = view.getUint32(12, true)
-        // return result
+        let view = await image.pointerToView(dictionary.VritualAddress + offset, 16)
+        let result = {}
+        result.OffsetToData = view.getUint32(0, true)
+        result.Size = view.getUint32(4, true)
+        result.CodePage = view.getUint32(8, true)
+        result.Reserved = view.getUint32(12, true)
+        return result
     }
 }

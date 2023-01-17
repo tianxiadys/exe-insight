@@ -8,7 +8,6 @@ export default class {
         result.MinorVersion = view.getUint16(10, true)
         result.NumberOfNamedEntries = view.getUint16(12, true)
         result.NumberOfIdEntries = view.getUint16(14, true)
-        //实际解释
         result.LIST = await this.#resourceList(image, dictionary, offset + 16, result.NumberOfNamedEntries + result.NumberOfIdEntries)
         return result
     }

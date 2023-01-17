@@ -13,7 +13,6 @@ export default class {
         result.AddressOfFunctions = view.getUint32(28, true)
         result.AddressofNames = view.getUint32(32, true)
         result.AddressOfNameOrdinals = view.getUint32(36, true)
-        //实际解释
         result.NameString = await image.pointerToString(result.Name, false)
         result.LIST = await this.#exportList(image, result)
         return result

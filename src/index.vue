@@ -14,7 +14,7 @@ export default {
       let file = event.dataTransfer.files.item(0)
       let test1 = new WindowsImage(file)
       await test1.parse()
-      console.log(test1.RESOURCE)
+      console.log(test1)
     }
   }
 }

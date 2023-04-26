@@ -1,7 +1,7 @@
 <template>
 </template>
 <script>
-import WindowsImage from './format/win32/image.js'
+import WindowsImage from './format/win32/pe.js'
 
 export default {
     mounted() {

@@ -4,63 +4,7 @@ import { parse_pe_coff } from './header/03coff.js'
 import { parse_pe_pe } from './header/04pe.js'
 import { parse_pe_dictionary } from './header/05dictionary.js'
 import { parse_pe_section } from './header/06section.js'
-//
-// export default class WindowsImage {
-//     constructor(file) {
-//         this.file = file
-//     }
-//
-//     async parse() {
-//         for (let dictionary of this.DICTIONARY) {
-//             switch (dictionary.Index) {
-//                 case 0:
-//                     this.EXPORT = await dictionaryExport.parse(this, dictionary)
-//                     break
-//                 case 1:
-//                     this.IMPORT = await dictionaryImport.parseNormal(this, dictionary)
-//                     break
-//                 case 2:
-//                     this.RESOURCE = await dictionaryResource.parse(this, dictionary, 0)
-//                     break
-//                 case 3:
-//                     this.EXCEPTION = await dictionaryException.parse(this, dictionary)
-//                     break
-//                 case 4:
-//                     this.SECURITY = await dictionarySecurity.parse(this, dictionary)
-//                     break
-//                 case 5:
-//                     this.BASE_RELOCATION = await dictionaryBaseRelocation.parse(this, dictionary)
-//                     break
-//                 case 6:
-//                     this.DEBUG = await dictionaryDebug.parse(this, dictionary)
-//                     break
-//                 case 7:
-//                     this.ARCHITECTURE = await dictionaryArchitecture.parse(this, dictionary)
-//                     break
-//                 case 8:
-//                     this.GLOBAL_POINTER = await dictionaryGlobalPointer.parse(this, dictionary)
-//                     break
-//                 case 9:
-//                     this.THREAD_LOCAL = await dictionaryThreadLocal.parse(this, dictionary)
-//                     break
-//                 case 10:
-//                     this.LOAD_CONFIG = await dictionaryLoadConfig.parse(this, dictionary)
-//                     break
-//                 case 11:
-//                     this.BOUND_IMPORT = await dictionaryBoundImport.parse(this, dictionary)
-//                     break
-//                 //case 12 IAT表包含在IMPORT表中，无法独立存在
-//                 case 13:
-//                     this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary)
-//                     break
-//                 case 14:
-//                     this.COM_DESCRIPTOR = await dictionaryComDescriptor.parse(this, dictionary)
-//                     break
-//             }
-//         }
-//     }
-//
-// }
+import { parse_pe_debug } from './dictionary/06debug.js'
 
 export class ParserPE {
     async parse(file) {
@@ -71,6 +15,53 @@ export class ParserPE {
         this.PE = await parse_pe_pe(this, this.DOS.LfaNew + 24, this.COFF.SizeOfOptionalHeader)
         this.DICTIONARY = await parse_pe_dictionary(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader - this.PE.NumberOfRvaAndSizes * 8 + 24, this.PE.NumberOfRvaAndSizes)
         this.SECTION = await parse_pe_section(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader + 24, this.COFF.NumberOfSections)
+        for (let dictionary of this.DICTIONARY) {
+            switch (dictionary.Index) {
+                // case 0:
+                //     this.EXPORT = await dictionaryExport.parse(this, dictionary)
+                //     break
+                // case 1:
+                //     this.IMPORT = await dictionaryImport.parseNormal(this, dictionary)
+                //     break
+                // case 2:
+                //     this.RESOURCE = await dictionaryResource.parse(this, dictionary, 0)
+                //     break
+                // case 3:
+                //     this.EXCEPTION = await dictionaryException.parse(this, dictionary)
+                //     break
+                // case 4:
+                //     this.SECURITY = await dictionarySecurity.parse(this, dictionary)
+                //     break
+                // case 5:
+                //     this.BASE_RELOCATION = await dictionaryBaseRelocation.parse(this, dictionary)
+                //     break
+                case 6:
+                    this.DEBUG = await parse_pe_debug(this, dictionary)
+                    break
+                // case 7:
+                //     this.ARCHITECTURE = await dictionaryArchitecture.parse(this, dictionary)
+                //     break
+                // case 8:
+                //     this.GLOBAL_POINTER = await dictionaryGlobalPointer.parse(this, dictionary)
+                //     break
+                // case 9:
+                //     this.THREAD_LOCAL = await dictionaryThreadLocal.parse(this, dictionary)
+                //     break
+                // case 10:
+                //     this.LOAD_CONFIG = await dictionaryLoadConfig.parse(this, dictionary)
+                //     break
+                // case 11:
+                //     this.BOUND_IMPORT = await dictionaryBoundImport.parse(this, dictionary)
+                //     break
+                // //case 12 IAT表包含在IMPORT表中，无法独立存在
+                // case 13:
+                //     this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary)
+                //     break
+                // case 14:
+                //     this.COM_DESCRIPTOR = await dictionaryComDescriptor.parse(this, dictionary)
+                //     break
+            }
+        }
     }
 
     bufferToString(buffer, wide, offset, size) {

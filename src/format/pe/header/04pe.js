@@ -24,7 +24,6 @@ export async function parse_pe_pe(parser, offset, size) {
     result.Subsystem = view.getUint16(68, true)
     result.DllCharacteristics = view.getUint16(70, true)
     if (result.Magic === 0x10B) {
-        result.TYPE = 'PE32'
         result.BaseOfData = view.getUint32(24, true)
         result.ImageBase = view.getUint32(28, true)
         result.SizeOfStackReserve = view.getUint32(72, true)
@@ -34,7 +33,6 @@ export async function parse_pe_pe(parser, offset, size) {
         result.LoaderFlags = view.getUint32(88, true)
         result.NumberOfRvaAndSizes = view.getUint32(92, true)
     } else if (result.Magic === 0x20B) {
-        result.TYPE = 'PE64'
         result.ImageBase = view.getBigUint64(24, true)
         result.SizeOfStackReserve = view.getBigUint64(72, true)
         result.SizeOfStackCommit = view.getBigUint64(80, true)

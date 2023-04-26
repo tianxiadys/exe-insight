@@ -1,6 +1,4 @@
 .idea
-.vs
-.vscode
-
 dist
 node_modules
+pnpm-lock.yaml

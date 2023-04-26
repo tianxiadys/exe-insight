@@ -1,6 +1,6 @@
-import * as Vue from 'vue'
-import App from './index.vue'
+import { createApp } from 'vue'
+import Index from './index.vue'
 import './index.css'
 
-const app = Vue.createApp(App)
+const app = createApp(Index)
 app.mount('#app')

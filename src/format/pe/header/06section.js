@@ -1,8 +1,8 @@
 export async function parse_pe_section(parser, offset, count) {
-    let resultList = []
+    const resultList = []
     for (let index = 0; index < count; index++) {
-        let view = await parser.offsetToView(offset + index * 40, 40)
-        let result = {}
+        const view = await parser.offsetToView(offset + index * 40, 40)
+        const result = {}
         result.Index = index
         result.Name = parser.bufferToString(view.buffer, false, 0, 8)
         result.VirtualSize = view.getUint32(8, true)

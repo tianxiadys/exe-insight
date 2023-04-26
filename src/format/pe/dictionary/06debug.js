@@ -1,6 +1,6 @@
 export async function parse_pe_debug(parser, dictionary) {
-    let view = await parser.pointerToView(dictionary.VritualAddress, 28)
-    let result = {}
+    const view = await parser.pointerToView(dictionary.VritualAddress, 28)
+    const result = {}
     result.Characteristics = view.getUint32(0, true)
     result.TimeDateStamp = view.getUint32(4, true)
     result.MajorVersion = view.getUint32(8, true)

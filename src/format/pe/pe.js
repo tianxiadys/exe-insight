@@ -5,6 +5,7 @@ import { parse_pe_pe } from './header/04pe.js'
 import { parse_pe_dictionary } from './header/05dictionary.js'
 import { parse_pe_section } from './header/06section.js'
 import { parse_pe_debug } from './dictionary/06debug.js'
+import { parse_pe_bound_import } from './dictionary/11bound_import.js'
 
 export class ParserPE {
     async parse(file) {
@@ -15,7 +16,7 @@ export class ParserPE {
         this.PE = await parse_pe_pe(this, this.DOS.LfaNew + 24, this.COFF.SizeOfOptionalHeader)
         this.DICTIONARY = await parse_pe_dictionary(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader - this.PE.NumberOfRvaAndSizes * 8 + 24, this.PE.NumberOfRvaAndSizes)
         this.SECTION = await parse_pe_section(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader + 24, this.COFF.NumberOfSections)
-        for (let dictionary of this.DICTIONARY) {
+        for (const dictionary of this.DICTIONARY) {
             switch (dictionary.Index) {
                 // case 0:
                 //     this.EXPORT = await dictionaryExport.parse(this, dictionary)
@@ -50,9 +51,9 @@ export class ParserPE {
                 // case 10:
                 //     this.LOAD_CONFIG = await dictionaryLoadConfig.parse(this, dictionary)
                 //     break
-                // case 11:
-                //     this.BOUND_IMPORT = await dictionaryBoundImport.parse(this, dictionary)
-                //     break
+                case 11:
+                    this.BOUND_IMPORT = await parse_pe_bound_import(this, dictionary)
+                    break
                 // //case 12 IAT表包含在IMPORT表中，无法独立存在
                 // case 13:
                 //     this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary)
@@ -89,7 +90,7 @@ export class ParserPE {
     }
 
     async pointerToSection(pointer) {
-        for (let section of this.SECTION) {
+        for (const section of this.SECTION) {
             if (section.VirtualAddress <= pointer && section.VirtualAddress + section.VirtualSize > pointer) {
                 if (!section.BUFFER) {
                     section.BUFFER = await this.offsetToBuffer(section.PointerToRawData, section.SizeOfRawData)

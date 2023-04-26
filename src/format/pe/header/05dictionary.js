@@ -1,8 +1,8 @@
 export async function parse_pe_dictionary(parser, offset, count) {
-    let resultList = []
+    const resultList = []
     for (let index = 0; index < count; index++) {
-        let view = await parser.offsetToView(offset + index * 8, 8)
-        let result = {}
+        const view = await parser.offsetToView(offset + index * 8, 8)
+        const result = {}
         result.Index = index
         result.VritualAddress = view.getUint32(0, true)
         result.Size = view.getUint32(4, true)

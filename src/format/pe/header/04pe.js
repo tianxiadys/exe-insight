@@ -1,5 +1,5 @@
-export async function parse_pe_pe(reader, offset, size) {
-    const view = await reader.offsetToView(offset, size)
+export async function parse_pe_pe(parser, offset, size) {
+    const view = await parser.offsetToView(offset, size)
     const result = {}
     result.Magic = view.getUint16(0, true)
     result.MajorLinkerVersion = view.getUint8(2)

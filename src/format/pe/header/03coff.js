@@ -1,5 +1,5 @@
-export async function parse_pe_coff(reader, offset) {
-    const view = await reader.offsetToView(offset, 20)
+export async function parse_pe_coff(parser, offset) {
+    const view = await parser.offsetToView(offset, 20)
     const result = {}
     result.Machine = view.getUint16(0, true)
     result.NumberOfSections = view.getUint16(2, true)

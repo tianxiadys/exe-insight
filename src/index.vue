@@ -1,7 +1,7 @@
 <template>
 </template>
 <script>
-import WindowsImage from './format/win32/pe.js'
+import { ParserPE } from './format/pe/pe.js'
 
 export default {
     mounted() {
@@ -12,8 +12,8 @@ export default {
             event.preventDefault()
 
             let file = event.dataTransfer.files.item(0)
-            let test1 = new WindowsImage(file)
-            await test1.parse()
+            let test1 = new ParserPE()
+            await test1.parse(file)
             console.log(test1)
         }
     }

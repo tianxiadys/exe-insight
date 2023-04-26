@@ -1,10 +1,10 @@
-export async function parse_pe_section(reader, offset, count) {
+export async function parse_pe_section(parser, offset, count) {
     let resultList = []
     for (let index = 0; index < count; index++) {
-        let view = await reader.offsetToView(offset + index * 40, 40)
+        let view = await parser.offsetToView(offset + index * 40, 40)
         let result = {}
         result.Index = index
-        result.Name = reader.bufferToString(view.buffer, false, 0, 8)
+        result.Name = parser.bufferToString(view.buffer, false, 0, 8)
         result.VirtualSize = view.getUint32(8, true)
         result.VirtualAddress = view.getUint32(12, true)
         result.SizeOfRawData = view.getUint32(16, true)

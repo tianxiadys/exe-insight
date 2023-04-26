@@ -23,25 +23,28 @@ export async function parse_pe_pe(parser, offset, size) {
     result.CheckSum = view.getUint32(64, true)
     result.Subsystem = view.getUint16(68, true)
     result.DllCharacteristics = view.getUint16(70, true)
-    if (result.Magic === 0x10B) {
-        result.BaseOfData = view.getUint32(24, true)
-        result.ImageBase = view.getUint32(28, true)
-        result.SizeOfStackReserve = view.getUint32(72, true)
-        result.SizeOfStackCommit = view.getUint32(76, true)
-        result.SizeOfHeapReserve = view.getUint32(80, true)
-        result.SizeOfHeapCommit = view.getUint32(84, true)
-        result.LoaderFlags = view.getUint32(88, true)
-        result.NumberOfRvaAndSizes = view.getUint32(92, true)
-    } else if (result.Magic === 0x20B) {
-        result.ImageBase = view.getBigUint64(24, true)
-        result.SizeOfStackReserve = view.getBigUint64(72, true)
-        result.SizeOfStackCommit = view.getBigUint64(80, true)
-        result.SizeOfHeapReserve = view.getBigUint64(88, true)
-        result.SizeOfHeapCommit = view.getBigUint64(96, true)
-        result.LoaderFlags = view.getUint32(104, true)
-        result.NumberOfRvaAndSizes = view.getUint32(108, true)
-    } else {
-        throw 'unknown pe type'
+    switch (result.Magic) {
+        case 0x10B:
+            result.BaseOfData = view.getUint32(24, true)
+            result.ImageBase = view.getUint32(28, true)
+            result.SizeOfStackReserve = view.getUint32(72, true)
+            result.SizeOfStackCommit = view.getUint32(76, true)
+            result.SizeOfHeapReserve = view.getUint32(80, true)
+            result.SizeOfHeapCommit = view.getUint32(84, true)
+            result.LoaderFlags = view.getUint32(88, true)
+            result.NumberOfRvaAndSizes = view.getUint32(92, true)
+            break
+        case 0x20B:
+            result.ImageBase = view.getBigUint64(24, true)
+            result.SizeOfStackReserve = view.getBigUint64(72, true)
+            result.SizeOfStackCommit = view.getBigUint64(80, true)
+            result.SizeOfHeapReserve = view.getBigUint64(88, true)
+            result.SizeOfHeapCommit = view.getBigUint64(96, true)
+            result.LoaderFlags = view.getUint32(104, true)
+            result.NumberOfRvaAndSizes = view.getUint32(108, true)
+            break
+        default:
+            throw 'unknown pe type'
     }
     return result
 }

@@ -5,6 +5,7 @@ import { parse_pe_pe } from './header/04pe.js'
 import { parse_pe_dictionary } from './header/05dictionary.js'
 import { parse_pe_section } from './header/06section.js'
 import { parse_pe_export } from './dictionary/00export.js'
+import { parse_pe_import } from './dictionary/01import.js'
 import { parse_pe_resource } from './dictionary/02resource.js'
 import { parse_pe_debug } from './dictionary/06debug.js'
 import { parse_pe_bound_import } from './dictionary/11bound_import.js'
@@ -23,9 +24,9 @@ export class ParserPE {
                 case 0:
                     this.EXPORT = await parse_pe_export(this, dictionary)
                     break
-                // case 1:
-                //     this.IMPORT = await dictionaryImport.parseNormal(this, dictionary)
-                //     break
+                case 1:
+                    this.IMPORT = await parse_pe_import(this, dictionary)
+                    break
                 case 2:
                     this.RESOURCE = await parse_pe_resource(this, dictionary, 0)
                     break

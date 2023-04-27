@@ -8,6 +8,7 @@ import { parse_pe_export } from './dictionary/00export.js'
 import { parse_pe_import } from './dictionary/01import.js'
 import { parse_pe_resource } from './dictionary/02resource.js'
 import { parse_pe_debug } from './dictionary/06debug.js'
+import { parse_pe_thread_local } from './dictionary/09thread_local.js'
 import { parse_pe_bound_import } from './dictionary/11bound_import.js'
 
 export class ParserPE {
@@ -48,9 +49,9 @@ export class ParserPE {
                 // case 8:
                 //     this.GLOBAL_POINTER = await dictionaryGlobalPointer.parse(this, dictionary)
                 //     break
-                // case 9:
-                //     this.THREAD_LOCAL = await dictionaryThreadLocal.parse(this, dictionary)
-                //     break
+                case 9:
+                    this.THREAD_LOCAL = await parse_pe_thread_local(this, dictionary)
+                    break
                 // case 10:
                 //     this.LOAD_CONFIG = await dictionaryLoadConfig.parse(this, dictionary)
                 //     break

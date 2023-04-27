@@ -5,7 +5,6 @@ import { parse_pe_pe } from './header/04pe.js'
 import { parse_pe_dictionary } from './header/05dictionary.js'
 import { parse_pe_section } from './header/06section.js'
 import { parse_pe_export } from './dictionary/00export.js'
-import { parse_pe_import } from './dictionary/01import.js'
 import { parse_pe_resource } from './dictionary/02resource.js'
 import { parse_pe_debug } from './dictionary/06debug.js'
 import { parse_pe_thread_local } from './dictionary/09thread_local.js'
@@ -26,9 +25,9 @@ export class ParserPE {
                 case 0:
                     this.EXPORT = await parse_pe_export(this, dictionary)
                     break
-                case 1:
-                    this.IMPORT = await parse_pe_import(this, dictionary)
-                    break
+                // case 1:
+                //     this.IMPORT = await parse_pe_import(this, dictionary)
+                //     break
                 case 2:
                     this.RESOURCE = await parse_pe_resource(this, dictionary, 0)
                     break
@@ -59,7 +58,6 @@ export class ParserPE {
                 case 11:
                     this.BOUND_IMPORT = await parse_pe_bound_import(this, dictionary)
                     break
-                // //case 12 IAT表包含在IMPORT表中，无法独立存在
                 // case 13:
                 //     this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary)
                 //     break

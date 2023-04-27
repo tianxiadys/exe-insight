@@ -1,5 +1,5 @@
 export async function parse_pe_resource(parser, dictionary, offset) {
-    const view = await parser.pointerToView(dictionary.VritualAddress + offset, 16)
+    const view = await parser.pointerToView(dictionary.VritualAddress + offset)
     const result = {}
     result.Characteristics = view.getUint32(0, true)
     result.TimeDateStamp = view.getUint32(4, true)
@@ -14,7 +14,7 @@ export async function parse_pe_resource(parser, dictionary, offset) {
 async function resource_list(parser, dictionary, offset, count) {
     const resultList = []
     for (let index = 0; index < count; index++) {
-        const view = await parser.pointerToView(dictionary.VritualAddress + offset + index * 8, 8)
+        const view = await parser.pointerToView(dictionary.VritualAddress + offset + index * 8)
         const result = {}
         result.Index = index
         const union1 = view.getUint32(0, true)
@@ -35,13 +35,13 @@ async function resource_list(parser, dictionary, offset, count) {
 }
 
 async function resource_name(parser, dictionary, offset) {
-    const view = await parser.pointerToView(dictionary.VritualAddress + offset, 2)
+    const view = await parser.pointerToView(dictionary.VritualAddress + offset)
     const size = view.getUint16(0, true)
     return parser.pointerToString(dictionary.VritualAddress + offset + 2, true, size)
 }
 
 async function resource_data(parser, dictionary, offset) {
-    const view = await parser.pointerToView(dictionary.VritualAddress + offset, 16)
+    const view = await parser.pointerToView(dictionary.VritualAddress + offset)
     const result = {}
     result.OffsetToData = view.getUint32(0, true)
     result.Size = view.getUint32(4, true)

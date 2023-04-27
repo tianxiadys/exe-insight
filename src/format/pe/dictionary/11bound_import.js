@@ -2,7 +2,7 @@ export async function parse_pe_bound_import(parser, dictionary) {
     const resultList = []
     let count = 1
     for (let index = 0; index < count; index++) {
-        const view = await parser.pointerToView(dictionary.VritualAddress + index * 8, 8)
+        const view = await parser.pointerToView(dictionary.VritualAddress + index * 8)
         const result = {}
         result.Index = index
         result.TimeDateStamp = view.getUint32(0, true)

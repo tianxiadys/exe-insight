@@ -1,5 +1,5 @@
 export async function parse_pe_export(parser, dictionary) {
-    const view = await parser.pointerToView(dictionary.VritualAddress, 40)
+    const view = await parser.pointerToView(dictionary.VritualAddress)
     const result = {}
     result.Charateristics = view.getUint32(0, true)
     result.TimeDateStamp = view.getUint32(4, true)
@@ -18,9 +18,9 @@ export async function parse_pe_export(parser, dictionary) {
 }
 
 async function export_list(parser, result) {
-    const addressView = await parser.pointerToView(result.AddressOfFunctions, result.NumberOfFunctions * 4)
-    const nameView = await parser.pointerToView(result.AddressofNames, result.NumberOfNames * 4)
-    const ordinalView = await parser.pointerToView(result.AddressOfNameOrdinals, result.NumberOfNames * 4)
+    const addressView = await parser.pointerToView(result.AddressOfFunctions)
+    const nameView = await parser.pointerToView(result.AddressofNames)
+    const ordinalView = await parser.pointerToView(result.AddressOfNameOrdinals)
     //读取所有函数名称缓存到map
     const nameMap = new Map()
     for (let index = 0; index < result.NumberOfNames; index++) {

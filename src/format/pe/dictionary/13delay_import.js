@@ -5,7 +5,7 @@ export default class {
     static async parseDelay(image, dictionary) {
         let resultList = []
         for (let index = 0; ; index++) {
-            let view = await image.pointerToView(dictionary.VritualAddress + index * 32, 32)
+            let view = await image.pointerToView(dictionary.VritualAddress + index * 32)
             let result = {}
             result.Index = index
             result.AllAttributes = view.getUint32(0, true)

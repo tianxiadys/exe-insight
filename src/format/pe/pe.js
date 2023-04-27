@@ -104,9 +104,9 @@ export class ParserPE {
         throw 'pointer out of bound'
     }
 
-    async pointerToView(pointer, size) {
+    async pointerToView(pointer) {
         const section = await this.pointerToSection(pointer)
-        return new DataView(section.BUFFER, pointer - section.VirtualAddress, size)
+        return new DataView(section.BUFFER, pointer - section.VirtualAddress)
     }
 
     async pointerToString(pointer, wide, size) {

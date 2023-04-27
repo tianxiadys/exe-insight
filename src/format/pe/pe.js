@@ -9,6 +9,7 @@ import { parse_pe_import } from './dictionary/01import.js'
 import { parse_pe_resource } from './dictionary/02resource.js'
 import { parse_pe_debug } from './dictionary/06debug.js'
 import { parse_pe_thread_local } from './dictionary/09thread_local.js'
+import { parse_pe_load_config } from './dictionary/10load_config.js'
 import { parse_pe_bound_import } from './dictionary/11bound_import.js'
 
 export class ParserPE {
@@ -52,9 +53,9 @@ export class ParserPE {
                 case 9:
                     this.THREAD_LOCAL = await parse_pe_thread_local(this, dictionary)
                     break
-                // case 10:
-                //     this.LOAD_CONFIG = await dictionaryLoadConfig.parse(this, dictionary)
-                //     break
+                case 10:
+                    this.LOAD_CONFIG = await parse_pe_load_config(this, dictionary)
+                    break
                 case 11:
                     this.BOUND_IMPORT = await parse_pe_bound_import(this, dictionary)
                     break

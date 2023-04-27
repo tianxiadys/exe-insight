@@ -2,6 +2,7 @@
 </template>
 <script>
 import { ParserPE } from './format/pe/pe.js'
+import { ParserELF } from './format/elf/elf.js'
 
 export default {
     mounted() {
@@ -12,7 +13,7 @@ export default {
             event.preventDefault()
 
             let file = event.dataTransfer.files.item(0)
-            let test1 = new ParserPE()
+            let test1 = new ParserELF()
             await test1.parse(file)
             console.log(test1)
         }

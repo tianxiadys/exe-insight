@@ -1,50 +1,52 @@
 export async function parse_pe_pe(parser, offset, size) {
     const view = await parser.offsetToView(offset, size)
-    const result = {}
-    result.Magic = view.getUint16(0, true)
-    result.MajorLinkerVersion = view.getUint8(2)
-    result.MinorLinkerVersion = view.getUint8(3)
-    result.SizeOfCode = view.getUint32(4, true)
-    result.SizeOfInitializedData = view.getUint32(8, true)
-    result.SizeOfUninitializedData = view.getUint32(12, true)
-    result.AddressOfEntryPoint = view.getUint32(16, true)
-    result.BaseOfCode = view.getUint32(20, true)
-    result.SectionAlignment = view.getUint32(32, true)
-    result.FileAlignment = view.getUint32(36, true)
-    result.MajorOperatingSystemVersion = view.getUint16(40, true)
-    result.MinorOperatingSystemVersion = view.getUint16(42, true)
-    result.MajorImageVersion = view.getUint16(44, true)
-    result.MinorImageVersion = view.getUint16(46, true)
-    result.MajorSubsystemVersion = view.getUint16(48, true)
-    result.MinorSubsystemVersion = view.getUint16(50, true)
-    result.Win32VersionValue = view.getUint32(52, true)
-    result.SizeOfImage = view.getUint32(56, true)
-    result.SizeOfHeaders = view.getUint32(60, true)
-    result.CheckSum = view.getUint32(64, true)
-    result.Subsystem = view.getUint16(68, true)
-    result.DllCharacteristics = view.getUint16(70, true)
-    switch (result.Magic) {
+    const header = {}
+    header.Magic = view.getUint16(0, true)
+    header.MajorLinkerVersion = view.getUint8(2)
+    header.MinorLinkerVersion = view.getUint8(3)
+    header.SizeOfCode = view.getUint32(4, true)
+    header.SizeOfInitializedData = view.getUint32(8, true)
+    header.SizeOfUninitializedData = view.getUint32(12, true)
+    header.AddressOfEntryPoint = view.getUint32(16, true)
+    header.BaseOfCode = view.getUint32(20, true)
+    header.SectionAlignment = view.getUint32(32, true)
+    header.FileAlignment = view.getUint32(36, true)
+    header.MajorOperatingSystemVersion = view.getUint16(40, true)
+    header.MinorOperatingSystemVersion = view.getUint16(42, true)
+    header.MajorImageVersion = view.getUint16(44, true)
+    header.MinorImageVersion = view.getUint16(46, true)
+    header.MajorSubsystemVersion = view.getUint16(48, true)
+    header.MinorSubsystemVersion = view.getUint16(50, true)
+    header.Win32VersionValue = view.getUint32(52, true)
+    header.SizeOfImage = view.getUint32(56, true)
+    header.SizeOfHeaders = view.getUint32(60, true)
+    header.CheckSum = view.getUint32(64, true)
+    header.Subsystem = view.getUint16(68, true)
+    header.DllCharacteristics = view.getUint16(70, true)
+    switch (header.Magic) {
         case 0x10B:
-            result.BaseOfData = view.getUint32(24, true)
-            result.ImageBase = view.getUint32(28, true)
-            result.SizeOfStackReserve = view.getUint32(72, true)
-            result.SizeOfStackCommit = view.getUint32(76, true)
-            result.SizeOfHeapReserve = view.getUint32(80, true)
-            result.SizeOfHeapCommit = view.getUint32(84, true)
-            result.LoaderFlags = view.getUint32(88, true)
-            result.NumberOfRvaAndSizes = view.getUint32(92, true)
+            header.BITS = 32
+            header.BaseOfData = view.getUint32(24, true)
+            header.ImageBase = view.getUint32(28, true)
+            header.SizeOfStackReserve = view.getUint32(72, true)
+            header.SizeOfStackCommit = view.getUint32(76, true)
+            header.SizeOfHeapReserve = view.getUint32(80, true)
+            header.SizeOfHeapCommit = view.getUint32(84, true)
+            header.LoaderFlags = view.getUint32(88, true)
+            header.NumberOfRvaAndSizes = view.getUint32(92, true)
             break
         case 0x20B:
-            result.ImageBase = view.getBigUint64(24, true)
-            result.SizeOfStackReserve = view.getBigUint64(72, true)
-            result.SizeOfStackCommit = view.getBigUint64(80, true)
-            result.SizeOfHeapReserve = view.getBigUint64(88, true)
-            result.SizeOfHeapCommit = view.getBigUint64(96, true)
-            result.LoaderFlags = view.getUint32(104, true)
-            result.NumberOfRvaAndSizes = view.getUint32(108, true)
+            header.BITS = 64
+            header.ImageBase = view.getBigUint64(24, true)
+            header.SizeOfStackReserve = view.getBigUint64(72, true)
+            header.SizeOfStackCommit = view.getBigUint64(80, true)
+            header.SizeOfHeapReserve = view.getBigUint64(88, true)
+            header.SizeOfHeapCommit = view.getBigUint64(96, true)
+            header.LoaderFlags = view.getUint32(104, true)
+            header.NumberOfRvaAndSizes = view.getUint32(108, true)
             break
         default:
             throw 'unknown pe type'
     }
-    return result
+    return header
 }

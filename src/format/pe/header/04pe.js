@@ -1,4 +1,4 @@
-export async function parse_pe_pe(parser, offset, size) {
+export async function parse_pe(parser, offset, size) {
     const view = await parser.offsetToView(offset, size)
     const header = {}
     header.Magic = view.getUint16(0, true)

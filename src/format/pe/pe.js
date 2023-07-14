@@ -1,9 +1,9 @@
-import { parse_pe_dos } from './header/01dos.js'
-import { parse_pe_nt } from './header/02nt.js'
-import { parse_pe_coff } from './header/03coff.js'
-import { parse_pe_pe } from './header/04pe.js'
-import { parse_pe_dictionary } from './header/05dictionary.js'
-import { parse_pe_section } from './header/06section.js'
+import { parse_dos } from './header/01dos.js'
+import { parse_nt } from './header/02nt.js'
+import { parse_coff } from './header/03coff.js'
+import { parse_pe } from './header/04pe.js'
+import { parse_dictionary } from './header/05dictionary.js'
+import { parse_section } from './header/06section.js'
 import { parse_pe_export } from './dictionary/00export.js'
 import { parse_pe_resource } from './dictionary/02resource.js'
 import { parse_pe_debug } from './dictionary/06debug.js'
@@ -14,12 +14,12 @@ import { parse_pe_bound_import } from './dictionary/11bound_import.js'
 export class ParserPE {
     async parse(file) {
         this.FILE = file
-        this.DOS = await parse_pe_dos(this)
-        this.NT = await parse_pe_nt(this, this.DOS.LfaNew)
-        this.COFF = await parse_pe_coff(this, this.DOS.LfaNew + 4)
-        this.PE = await parse_pe_pe(this, this.DOS.LfaNew + 24, this.COFF.SizeOfOptionalHeader)
-        this.DICTIONARY = await parse_pe_dictionary(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader - this.PE.NumberOfRvaAndSizes * 8 + 24, this.PE.NumberOfRvaAndSizes)
-        this.SECTION = await parse_pe_section(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader + 24, this.COFF.NumberOfSections)
+        this.DOS = await parse_dos(this)
+        this.NT = await parse_nt(this, this.DOS.LfaNew)
+        this.COFF = await parse_coff(this, this.DOS.LfaNew + 4)
+        this.PE = await parse_pe(this, this.DOS.LfaNew + 24, this.COFF.SizeOfOptionalHeader)
+        this.DICTIONARY = await parse_dictionary(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader - this.PE.NumberOfRvaAndSizes * 8 + 24, this.PE.NumberOfRvaAndSizes)
+        this.SECTION = await parse_section(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader + 24, this.COFF.NumberOfSections)
         for (const dictionary of this.DICTIONARY) {
             switch (dictionary.Index) {
                 case 0:

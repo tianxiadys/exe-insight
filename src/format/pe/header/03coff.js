@@ -1,4 +1,4 @@
-export async function parse_pe_coff(parser, offset) {
+export async function parse_coff(parser, offset) {
     const view = await parser.offsetToView(offset, 20)
     const header = {}
     header.Machine = view.getUint16(0, true)

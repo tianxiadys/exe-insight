@@ -1,4 +1,4 @@
-export async function parse_pe_section(parser, offset, count) {
+export async function parse_section(parser, offset, count) {
     const sectionList = []
     for (let index = 0; index < count; index++) {
         const view = await parser.offsetToView(offset + index * 40, 40)

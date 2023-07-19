@@ -1,37 +1,37 @@
-export async function parse_pe_resource(parser, dictionary, offset) {
+export async function parse_resource(parser, dictionary, offset) {
     const view = await parser.pointerToView(dictionary.VritualAddress + offset)
-    const result = {}
-    result.Characteristics = view.getUint32(0, true)
-    result.TimeDateStamp = view.getUint32(4, true)
-    result.MajorVersion = view.getUint16(8, true)
-    result.MinorVersion = view.getUint16(10, true)
-    result.NumberOfNamedEntries = view.getUint16(12, true)
-    result.NumberOfIdEntries = view.getUint16(14, true)
-    result.LIST = await resource_list(parser, dictionary, offset + 16, result.NumberOfNamedEntries + result.NumberOfIdEntries)
-    return result
+    const header = {}
+    header.Characteristics = view.getUint32(0, true)
+    header.TimeDateStamp = view.getUint32(4, true)
+    header.MajorVersion = view.getUint16(8, true)
+    header.MinorVersion = view.getUint16(10, true)
+    header.NumberOfNamedEntries = view.getUint16(12, true)
+    header.NumberOfIdEntries = view.getUint16(14, true)
+    header.LIST = await resource_list(parser, dictionary, offset + 16, header.NumberOfNamedEntries + header.NumberOfIdEntries)
+    return header
 }
 
 async function resource_list(parser, dictionary, offset, count) {
-    const resultList = []
+    const itemList = []
     for (let index = 0; index < count; index++) {
         const view = await parser.pointerToView(dictionary.VritualAddress + offset + index * 8)
-        const result = {}
-        result.Index = index
+        const item = {}
+        item.Index = index
         const union1 = view.getUint32(0, true)
-        if (union1 >>> 31 > 0) {
-            result.Name = await resource_name(parser, dictionary, union1 & 0x7FFFFFFF)
+        if (union1 > 0x7FFF_FFFF) {
+            item.Name = await resource_name(parser, dictionary, union1 & 0x7FFF_FFFF)
         } else {
-            result.Ordinal = union1
+            item.Ordinal = union1
         }
         let union2 = view.getUint32(4, true)
-        if (union2 >>> 31 > 0) {
-            result.CHILDREN = await parse_pe_resource(parser, dictionary, union2 & 0x7FFFFFFF)
+        if (union2 > 0x7FFF_FFFF) {
+            item.CHILDREN = await parse_resource(parser, dictionary, union2 & 0x7FFF_FFFF)
         } else {
-            result.DATA = await resource_data(parser, dictionary, union2)
+            item.DATA = await resource_data(parser, dictionary, union2)
         }
-        resultList.push(result)
+        itemList.push(item)
     }
-    return resultList
+    return itemList
 }
 
 async function resource_name(parser, dictionary, offset) {
@@ -42,10 +42,10 @@ async function resource_name(parser, dictionary, offset) {
 
 async function resource_data(parser, dictionary, offset) {
     const view = await parser.pointerToView(dictionary.VritualAddress + offset)
-    const result = {}
-    result.OffsetToData = view.getUint32(0, true)
-    result.Size = view.getUint32(4, true)
-    result.CodePage = view.getUint32(8, true)
-    result.Reserved = view.getUint32(12, true)
-    return result
+    const data = {}
+    data.OffsetToData = view.getUint32(0, true)
+    data.Size = view.getUint32(4, true)
+    data.CodePage = view.getUint32(8, true)
+    data.Reserved = view.getUint32(12, true)
+    return data
 }

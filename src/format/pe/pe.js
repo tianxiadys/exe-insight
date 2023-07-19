@@ -4,8 +4,8 @@ import { parse_coff } from './header/03coff.js'
 import { parse_pe } from './header/04pe.js'
 import { parse_dictionary } from './header/05dictionary.js'
 import { parse_section } from './header/06section.js'
-import { parse_pe_export } from './dictionary/00export.js'
-import { parse_pe_resource } from './dictionary/02resource.js'
+import { parse_export } from './dictionary/00export.js'
+import { parse_resource } from './dictionary/02resource.js'
 import { parse_pe_debug } from './dictionary/06debug.js'
 import { parse_pe_thread_local } from './dictionary/09thread_local.js'
 import { parse_pe_load_config } from './dictionary/10load_config.js'
@@ -23,13 +23,13 @@ export class ParserPE {
         for (const dictionary of this.DICTIONARY) {
             switch (dictionary.Index) {
                 case 0:
-                    this.EXPORT = await parse_pe_export(this, dictionary)
+                    this.EXPORT = await parse_export(this, dictionary)
                     break
                 // case 1:
                 //     this.IMPORT = await parse_pe_import(this, dictionary)
                 //     break
                 case 2:
-                    this.RESOURCE = await parse_pe_resource(this, dictionary, 0)
+                    this.RESOURCE = await parse_resource(this, dictionary, 0)
                     break
                 // case 3:
                 //     this.EXCEPTION = await dictionaryException.parse(this, dictionary)

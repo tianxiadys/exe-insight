@@ -1,4 +1,4 @@
-export async function parse_pe_export(parser, dictionary) {
+export async function parse_export(parser, dictionary) {
     const view = await parser.pointerToView(dictionary.VritualAddress)
     const header = {}
     header.Charateristics = view.getUint32(0, true)
@@ -13,11 +13,11 @@ export async function parse_pe_export(parser, dictionary) {
     header.AddressofNames = view.getUint32(32, true)
     header.AddressOfNameOrdinals = view.getUint32(36, true)
     header.NameString = await parser.pointerToString(header.Name, false)
-    header.DATA = await export_data(parser, header)
+    header.LIST = await export_list(parser, header)
     return header
 }
 
-async function export_data(parser, header) {
+async function export_list(parser, header) {
     const addressView = await parser.pointerToView(header.AddressOfFunctions)
     const nameView = await parser.pointerToView(header.AddressofNames)
     const ordinalView = await parser.pointerToView(header.AddressOfNameOrdinals)

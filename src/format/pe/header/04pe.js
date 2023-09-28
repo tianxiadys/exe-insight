@@ -25,6 +25,7 @@ export async function parse_pe(parser, offset, size) {
     header.DllCharacteristics = view.getUint16(70, true)
     switch (header.Magic) {
         case 0x10B:
+            header.BITS = 32
             header.BaseOfData = view.getUint32(24, true)
             header.ImageBase = view.getUint32(28, true)
             header.SizeOfStackReserve = view.getUint32(72, true)
@@ -35,6 +36,7 @@ export async function parse_pe(parser, offset, size) {
             header.NumberOfRvaAndSizes = view.getUint32(92, true)
             break
         case 0x20B:
+            header.BITS = 64
             header.ImageBase = view.getBigUint64(24, true)
             header.SizeOfStackReserve = view.getBigUint64(72, true)
             header.SizeOfStackCommit = view.getBigUint64(80, true)

@@ -13,7 +13,7 @@ export default {
             event.preventDefault()
 
             let file = event.dataTransfer.files.item(0)
-            let test1 = new ParserELF()
+            let test1 = new ParserPE()
             await test1.parse(file)
             console.log(test1)
         }

@@ -7,11 +7,11 @@ export async function parse_resource(parser, dictionary, offset) {
     header.MinorVersion = view.getUint16(10, true)
     header.NumberOfNamedEntries = view.getUint16(12, true)
     header.NumberOfIdEntries = view.getUint16(14, true)
-    header.LIST = await resource_list(parser, dictionary, offset + 16, header.NumberOfNamedEntries + header.NumberOfIdEntries)
+    header.ITEMS = await resource_items(parser, dictionary, offset + 16, header.NumberOfNamedEntries + header.NumberOfIdEntries)
     return header
 }
 
-async function resource_list(parser, dictionary, offset, count) {
+async function resource_items(parser, dictionary, offset, count) {
     const itemList = []
     for (let index = 0; index < count; index++) {
         const view = await parser.pointerToView(dictionary.VritualAddress + offset + index * 8)

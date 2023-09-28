@@ -6,10 +6,6 @@ import { parse_dictionary } from './header/05dictionary.js'
 import { parse_section } from './header/06section.js'
 import { parse_export } from './dictionary/00export.js'
 import { parse_resource } from './dictionary/02resource.js'
-import { parse_pe_debug } from './dictionary/06debug.js'
-import { parse_pe_thread_local } from './dictionary/09thread_local.js'
-import { parse_pe_load_config } from './dictionary/10load_config.js'
-import { parse_pe_bound_import } from './dictionary/11bound_import.js'
 
 export class ParserPE {
     async parse(file) {
@@ -40,24 +36,24 @@ export class ParserPE {
                 // case 5:
                 //     this.BASE_RELOCATION = await dictionaryBaseRelocation.parse(this, dictionary)
                 //     break
-                case 6:
-                    this.DEBUG = await parse_pe_debug(this, dictionary)
-                    break
+                // case 6:
+                //     this.DEBUG = await parse_pe_debug(this, dictionary)
+                //     break
                 // case 7:
                 //     this.ARCHITECTURE = await dictionaryArchitecture.parse(this, dictionary)
                 //     break
                 // case 8:
                 //     this.GLOBAL_POINTER = await dictionaryGlobalPointer.parse(this, dictionary)
                 //     break
-                case 9:
-                    this.THREAD_LOCAL = await parse_pe_thread_local(this, dictionary)
-                    break
-                case 10:
-                    this.LOAD_CONFIG = await parse_pe_load_config(this, dictionary)
-                    break
-                case 11:
-                    this.BOUND_IMPORT = await parse_pe_bound_import(this, dictionary)
-                    break
+                // case 9:
+                //     this.THREAD_LOCAL = await parse_pe_thread_local(this, dictionary)
+                //     break
+                // case 10:
+                //     this.LOAD_CONFIG = await parse_pe_load_config(this, dictionary)
+                //     break
+                // case 11:
+                //     this.BOUND_IMPORT = await parse_pe_bound_import(this, dictionary)
+                //     break
                 // case 13:
                 //     this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary)
                 //     break

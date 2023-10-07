@@ -1,4 +1,4 @@
-export async function parse_dos(parser) {
+export async function parseDOS(parser) {
     const view = await parser.offsetToView(0, 64)
     const header = {}
     header.Type = view.getUint16(0, true)

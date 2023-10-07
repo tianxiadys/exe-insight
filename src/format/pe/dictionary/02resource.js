@@ -1,4 +1,4 @@
-export async function parse_resource(parser, dictionary, offset) {
+export async function parseResource(parser, dictionary, offset) {
     const view = await parser.pointerToView(dictionary.VritualAddress + offset)
     const header = {}
     header.Characteristics = view.getUint32(0, true)
@@ -7,11 +7,11 @@ export async function parse_resource(parser, dictionary, offset) {
     header.MinorVersion = view.getUint16(10, true)
     header.NumberOfNamedEntries = view.getUint16(12, true)
     header.NumberOfIdEntries = view.getUint16(14, true)
-    header.ITEMS = await resource_items(parser, dictionary, offset + 16, header.NumberOfNamedEntries + header.NumberOfIdEntries)
+    header.ITEMS = await resourceItems(parser, dictionary, offset + 16, header.NumberOfNamedEntries + header.NumberOfIdEntries)
     return header
 }
 
-async function resource_items(parser, dictionary, offset, count) {
+async function resourceItems(parser, dictionary, offset, count) {
     const itemList = []
     for (let index = 0; index < count; index++) {
         const view = await parser.pointerToView(dictionary.VritualAddress + offset + index * 8)
@@ -28,7 +28,7 @@ async function resource_items(parser, dictionary, offset, count) {
         }
         let union2 = view.getUint32(4, true)
         if (union2 > 0x7FFF_FFFF) {
-            item.CHILDREN = await parse_resource(parser, dictionary, union2 & 0x7FFF_FFFF)
+            item.CHILDREN = await parseResource(parser, dictionary, union2 & 0x7FFF_FFFF)
         } else {
             const view = await parser.pointerToView(dictionary.VritualAddress + union2)
             item.OffsetToData = view.getUint32(0, true)

@@ -1,32 +1,32 @@
-import { parse_dos } from './header/01dos.js'
-import { parse_nt } from './header/02nt.js'
-import { parse_coff } from './header/03coff.js'
-import { parse_pe } from './header/04pe.js'
-import { parse_dictionary } from './header/05dictionary.js'
-import { parse_section } from './header/06section.js'
-import { parse_export } from './dictionary/00export.js'
+import { parseDOS } from './header/01dos.js'
+import { parseNT } from './header/02nt.js'
+import { parseCOFF } from './header/03coff.js'
+import { parsePE } from './header/04pe.js'
+import { parseDictionary } from './header/05dictionary.js'
+import { parseSection } from './header/06section.js'
+import { parseExport } from './dictionary/00export.js'
 import { parse_import } from './dictionary/01import.js'
-import { parse_resource } from './dictionary/02resource.js'
+import { parseResource } from './dictionary/02resource.js'
 
 export class ParserPE {
     async parse(file) {
         this.FILE = file
-        this.DOS = await parse_dos(this)
-        this.NT = await parse_nt(this, this.DOS)
-        this.COFF = await parse_coff(this, this.DOS)
-        this.PE = await parse_pe(this, this.DOS, this.COFF)
-        this.DICTIONARY = await parse_dictionary(this, this.DOS, this.PE)
-        this.SECTION = await parse_section(this, this.DOS, this.COFF)
+        this.DOS = await parseDOS(this)
+        this.NT = await parseNT(this, this.DOS)
+        this.COFF = await parseCOFF(this, this.DOS)
+        this.PE = await parsePE(this, this.DOS, this.COFF)
+        this.DICTIONARY = await parseDictionary(this, this.DOS, this.PE)
+        this.SECTION = await parseSection(this, this.DOS, this.COFF)
         for (const dictionary of this.DICTIONARY) {
             switch (dictionary.Index) {
                 case 0:
-                    this.EXPORT = await parse_export(this, dictionary)
+                    this.EXPORT = await parseExport(this, dictionary)
                     break
                 case 1:
                     this.IMPORT = await parse_import(this, this.PE, dictionary)
                     break
                 case 2:
-                    this.RESOURCE = await parse_resource(this, dictionary, 0)
+                    this.RESOURCE = await parseResource(this, dictionary, 0)
                     break
                 // case 3:
                 //     this.EXCEPTION = await dictionaryException.parse(this, dictionary)

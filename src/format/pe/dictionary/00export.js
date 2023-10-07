@@ -1,4 +1,4 @@
-export async function parse_export(parser, dictionary) {
+export async function parseExport(parser, dictionary) {
     const view = await parser.pointerToView(dictionary.VritualAddress)
     const header = {}
     header.Charateristics = view.getUint32(0, true)
@@ -13,11 +13,11 @@ export async function parse_export(parser, dictionary) {
     header.AddressofNames = view.getUint32(32, true)
     header.AddressOfNameOrdinals = view.getUint32(36, true)
     header.Name = await parser.pointerToString(header.NameRVA, false)
-    header.ITEMS = await export_items(parser, header)
+    header.ITEMS = await exportItems(parser, header)
     return header
 }
 
-async function export_items(parser, header) {
+async function exportItems(parser, header) {
     //序号映射到函数名
     const ordinalView = await parser.pointerToView(header.AddressOfNameOrdinals)
     const nameView = await parser.pointerToView(header.AddressofNames)

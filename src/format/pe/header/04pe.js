@@ -1,4 +1,4 @@
-export async function parse_pe(parser, DOS) {
+export async function parsePE(parser, DOS) {
     const view = await parser.offsetToView(DOS.LfaNew + 24, 112)
     const header = {}
     header.Magic = view.getUint16(0, true)

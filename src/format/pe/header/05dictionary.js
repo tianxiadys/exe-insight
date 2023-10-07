@@ -1,4 +1,4 @@
-export async function parse_dictionary(parser, DOS, PE) {
+export async function parseDictionary(parser, DOS, PE) {
     const dictionaryList = []
     for (let index = 0; index < PE.NumberOfRvaAndSizes; index++) {
         const view = await parser.offsetToView(DOS.LfaNew + PE.OffsetDictionary + index * 8, 8)

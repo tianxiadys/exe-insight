@@ -5,7 +5,7 @@ import { parsePE } from './header/04pe.js'
 import { parseDictionary } from './header/05dictionary.js'
 import { parseSection } from './header/06section.js'
 import { parseExport } from './dictionary/00export.js'
-import { parse_import } from './dictionary/01import.js'
+import { parseDelayImport, parseImport } from './dictionary/01import.js'
 import { parseResource } from './dictionary/02resource.js'
 
 export class ParserPE {
@@ -23,7 +23,7 @@ export class ParserPE {
                     this.EXPORT = await parseExport(this, dictionary)
                     break
                 case 1:
-                    this.IMPORT = await parse_import(this, this.PE, dictionary)
+                    this.IMPORT = await parseImport(this, this.PE, dictionary)
                     break
                 case 2:
                     this.RESOURCE = await parseResource(this, dictionary, 0)
@@ -55,9 +55,9 @@ export class ParserPE {
                 // case 11:
                 //     this.BOUND_IMPORT = await parse_bound_import(this, dictionary)
                 //     break
-                // case 13:
-                //     this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary)
-                //     break
+                case 13:
+                    this.DELAY_IMPORT = await parseDelayImport(this, this.PE, dictionary)
+                    break
                 // case 14:
                 //     this.COM_DESCRIPTOR = await dictionaryComDescriptor.parse(this, dictionary)
                 //     break

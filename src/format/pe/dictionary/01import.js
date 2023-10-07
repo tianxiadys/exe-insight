@@ -1,4 +1,4 @@
-export async function parse_import(parser, PE, dictionary) {
+export async function parseImport(parser, PE, dictionary) {
     const resultList = []
     for (let index = 0; ; index++) {
         const view = await parser.pointerToView(dictionary.VritualAddress + index * 20)
@@ -12,7 +12,7 @@ export async function parse_import(parser, PE, dictionary) {
         //零终止符
         if (result.FirstThunk > 0) {
             result.Name = await parser.pointerToString(result.NameRVA, false)
-            result.ITEMS = await import_items(parser, PE, result.FirstThunk)
+            result.ITEMS = await importItems(parser, PE, result.OriginalFirstThunk || result.FirstThunk)
             resultList.push(result)
         } else {
             break
@@ -21,15 +21,41 @@ export async function parse_import(parser, PE, dictionary) {
     return resultList
 }
 
-async function import_items(parser, PE, offset) {
+export async function parseDelayImport(parser, PE, dictionary) {
+    const resultList = []
+    for (let index = 0; ; index++) {
+        let view = await parser.pointerToView(dictionary.VritualAddress + index * 32)
+        let result = {}
+        result.Index = index
+        result.AllAttributes = view.getUint32(0, true)
+        result.DllNameRVA = view.getUint32(4, true)
+        result.ModuleHandleRVA = view.getUint32(8, true)
+        result.ImportAddressTableRVA = view.getUint32(12, true)
+        result.ImportNameTableRVA = view.getUint32(16, true)
+        result.BoundImportAddressTableRVA = view.getUint32(20, true)
+        result.UnloadInformationTableRVA = view.getUint32(24, true)
+        result.TimeDateStamp = view.getUint32(28, true)
+        //零终止符
+        if (result.ImportAddressTableRVA > 0) {
+            result.Name = await parser.pointerToString(result.DllNameRVA, false)
+            result.LIST = await importItems(parser, PE, result.ImportNameTableRVA || result.ImportAddressTableRVA)
+            resultList.push(result)
+        } else {
+            break
+        }
+    }
+    return resultList
+}
+
+async function importItems(parser, PE, offset) {
     if (PE.Magic === 0x10B) {
-        return import_items32(parser, offset)
+        return importItems32(parser, offset)
     } else if (PE.Magic === 0x20B) {
-        return import_items64(parser, offset)
+        return importItems64(parser, offset)
     }
 }
 
-async function import_items32(parser, offset) {
+async function importItems32(parser, offset) {
     const view = await parser.pointerToView(offset)
     const itemList = []
     for (let index = 0; ; index++) {
@@ -51,7 +77,7 @@ async function import_items32(parser, offset) {
     return itemList
 }
 
-async function import_items64(parser, offset) {
+async function importItems64(parser, offset) {
     const view = await parser.pointerToView(offset)
     const itemList = []
     for (let index = 0; ; index++) {

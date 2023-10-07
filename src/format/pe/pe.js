@@ -25,9 +25,9 @@ export class ParserPE {
                 case 1:
                     this.IMPORT = await parse_import(this, this.PE, dictionary)
                     break
-                // case 2:
-                //     this.RESOURCE = await parse_resource(this, dictionary, 0)
-                //     break
+                case 2:
+                    this.RESOURCE = await parse_resource(this, dictionary, 0)
+                    break
                 // case 3:
                 //     this.EXCEPTION = await dictionaryException.parse(this, dictionary)
                 //     break
@@ -53,7 +53,7 @@ export class ParserPE {
                 //     this.LOAD_CONFIG = await parse_pe_load_config(this, dictionary)
                 //     break
                 // case 11:
-                //     this.BOUND_IMPORT = await parse_pe_bound_import(this, dictionary)
+                //     this.BOUND_IMPORT = await parse_bound_import(this, dictionary)
                 //     break
                 // case 13:
                 //     this.DELAY_IMPORT = await dictionaryImport.parseDelay(this, dictionary)

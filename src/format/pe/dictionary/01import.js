@@ -7,11 +7,11 @@ export async function parse_import(parser, PE, dictionary) {
         result.OriginalFirstThunk = view.getUint32(0, true)
         result.TimeDateStamp = view.getUint32(4, true)
         result.ForwarderChain = view.getUint32(8, true)
-        result.Name = view.getUint32(12, true)
+        result.NameRVA = view.getUint32(12, true)
         result.FirstThunk = view.getUint32(16, true)
         //零终止符
         if (result.FirstThunk > 0) {
-            result.NameString = await parser.pointerToString(result.Name, false)
+            result.Name = await parser.pointerToString(result.NameRVA, false)
             result.ITEMS = await import_items(parser, PE, result.FirstThunk)
             resultList.push(result)
         } else {
@@ -41,8 +41,7 @@ async function import_items32(parser, offset) {
             if (union > 0x7FFF_FFFF) {
                 item.Ordinal = union & 0xFFFF
             } else {
-                item.Name = union + 2
-                item.NameString = await parser.pointerToString(item.Name, false)
+                item.Name = await parser.pointerToString(union + 2, false)
             }
             itemList.push(item)
         } else {
@@ -64,8 +63,8 @@ async function import_items64(parser, offset) {
             if (union > 0x7FFF_FFFFn) {
                 item.Ordinal = Number(union & 0xFFFFn)
             } else {
-                item.Name = Number(union + 2n)
-                item.NameString = await parser.pointerToString(item.Name, false)
+                const name = Number(union + 2n)
+                item.Name = await parser.pointerToString(name, false)
             }
             itemList.push(item)
         } else {

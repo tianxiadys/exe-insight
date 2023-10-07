@@ -19,7 +19,10 @@ async function resource_items(parser, dictionary, offset, count) {
         item.Index = index
         const union1 = view.getUint32(0, true)
         if (union1 > 0x7FFF_FFFF) {
-            item.Name = await resource_name(parser, dictionary, union1 & 0x7FFF_FFFF)
+            const offset = dictionary.VritualAddress + union1 & 0x7FFF_FFFF
+            const view = await parser.pointerToView(offset)
+            const size = view.getUint16(0, true)
+            item.Name = await parser.pointerToString(offset + 2, true, size)
         } else {
             item.Ordinal = union1
         }
@@ -27,25 +30,13 @@ async function resource_items(parser, dictionary, offset, count) {
         if (union2 > 0x7FFF_FFFF) {
             item.CHILDREN = await parse_resource(parser, dictionary, union2 & 0x7FFF_FFFF)
         } else {
-            item.DATA = await resource_data(parser, dictionary, union2)
+            const view = await parser.pointerToView(dictionary.VritualAddress + union2)
+            item.OffsetToData = view.getUint32(0, true)
+            item.Size = view.getUint32(4, true)
+            item.CodePage = view.getUint32(8, true)
+            item.Reserved = view.getUint32(12, true)
         }
         itemList.push(item)
     }
     return itemList
-}
-
-async function resource_name(parser, dictionary, offset) {
-    const view = await parser.pointerToView(dictionary.VritualAddress + offset)
-    const size = view.getUint16(0, true)
-    return parser.pointerToString(dictionary.VritualAddress + offset + 2, true, size)
-}
-
-async function resource_data(parser, dictionary, offset) {
-    const view = await parser.pointerToView(dictionary.VritualAddress + offset)
-    const data = {}
-    data.OffsetToData = view.getUint32(0, true)
-    data.Size = view.getUint32(4, true)
-    data.CodePage = view.getUint32(8, true)
-    data.Reserved = view.getUint32(12, true)
-    return data
 }

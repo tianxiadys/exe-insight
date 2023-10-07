@@ -63,6 +63,11 @@ export class ParserPE {
                 //     break
             }
         }
+        this.NT = await parse_nt(this, this.DOS)
+        this.COFF = await parse_coff(this, this.DOS)
+        this.PE = await parse_pe(this, this.DOS, this.COFF)
+        this.DICTIONARY = await parse_dictionary(this, this.DOS, this.PE)
+        this.SECTION = await parse_section(this, this.DOS, this.COFF)
     }
 
     bufferToString(buffer, wide, offset, size) {
@@ -91,11 +96,13 @@ export class ParserPE {
 
     async pointerToSection(pointer) {
         for (const section of this.SECTION) {
-            if (section.VirtualAddress <= pointer && section.VirtualAddress + section.VirtualSize > pointer) {
-                if (!section.BUFFER) {
-                    section.BUFFER = await this.offsetToBuffer(section.PointerToRawData, section.SizeOfRawData)
+            if (section.VirtualAddress <= pointer) {
+                if (section.VirtualAddress + section.VirtualSize > pointer) {
+                    if (!section.BUFFER) {
+                        section.BUFFER = await this.offsetToBuffer(section.PointerToRawData, section.SizeOfRawData)
+                    }
+                    return section
                 }
-                return section
             }
         }
         throw 'pointer out of bound'

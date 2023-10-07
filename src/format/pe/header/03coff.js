@@ -1,5 +1,5 @@
-export async function parse_coff(parser, offset) {
-    const view = await parser.offsetToView(offset, 20)
+export async function parse_coff(parser, DOS) {
+    const view = await parser.offsetToView(DOS.LfaNew + 4, 20)
     const header = {}
     header.Machine = view.getUint16(0, true)
     header.NumberOfSections = view.getUint16(2, true)

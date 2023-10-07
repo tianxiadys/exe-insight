@@ -1,7 +1,7 @@
-export async function parse_dictionary(parser, offset, count) {
+export async function parse_dictionary(parser, DOS, PE) {
     const dictionaryList = []
-    for (let index = 0; index < count; index++) {
-        const view = await parser.offsetToView(offset + index * 8, 8)
+    for (let index = 0; index < PE.NumberOfRvaAndSizes; index++) {
+        const view = await parser.offsetToView(DOS.LfaNew + PE.OffsetDictionary + index * 8, 8)
         const dictionary = {}
         dictionary.Index = index
         dictionary.VritualAddress = view.getUint32(0, true)

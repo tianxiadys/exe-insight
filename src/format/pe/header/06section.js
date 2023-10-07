@@ -1,7 +1,7 @@
-export async function parse_section(parser, offset, count) {
+export async function parse_section(parser, DOS, COFF) {
     const sectionList = []
-    for (let index = 0; index < count; index++) {
-        const view = await parser.offsetToView(offset + index * 40, 40)
+    for (let index = 0; index < COFF.NumberOfSections; index++) {
+        const view = await parser.offsetToView(DOS.LfaNew + COFF.SizeOfOptionalHeader + index * 40 + 24, 40)
         const section = {}
         section.Index = index
         section.Name = parser.bufferToString(view.buffer, false, 0, 8)

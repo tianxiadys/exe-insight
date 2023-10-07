@@ -12,22 +12,22 @@ export class ParserPE {
     async parse(file) {
         this.FILE = file
         this.DOS = await parse_dos(this)
-        this.NT = await parse_nt(this, this.DOS.LfaNew)
-        this.COFF = await parse_coff(this, this.DOS.LfaNew + 4)
-        this.PE = await parse_pe(this, this.DOS.LfaNew + 24, this.COFF.SizeOfOptionalHeader)
-        this.DICTIONARY = await parse_dictionary(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader - this.PE.NumberOfRvaAndSizes * 8 + 24, this.PE.NumberOfRvaAndSizes)
-        this.SECTION = await parse_section(this, this.DOS.LfaNew + this.COFF.SizeOfOptionalHeader + 24, this.COFF.NumberOfSections)
+        this.NT = await parse_nt(this, this.DOS)
+        this.COFF = await parse_coff(this, this.DOS)
+        this.PE = await parse_pe(this, this.DOS, this.COFF)
+        this.DICTIONARY = await parse_dictionary(this, this.DOS, this.PE)
+        this.SECTION = await parse_section(this, this.DOS, this.COFF)
         for (const dictionary of this.DICTIONARY) {
             switch (dictionary.Index) {
                 case 0:
                     this.EXPORT = await parse_export(this, dictionary)
                     break
-                case 1:
-                    this.IMPORT = await parse_import(this, dictionary)
-                    break
-                case 2:
-                    this.RESOURCE = await parse_resource(this, dictionary, 0)
-                    break
+                // case 1:
+                //     this.IMPORT = await parse_import(this, dictionary)
+                //     break
+                // case 2:
+                //     this.RESOURCE = await parse_resource(this, dictionary, 0)
+                //     break
                 // case 3:
                 //     this.EXCEPTION = await dictionaryException.parse(this, dictionary)
                 //     break
@@ -63,11 +63,6 @@ export class ParserPE {
                 //     break
             }
         }
-        this.NT = await parse_nt(this, this.DOS)
-        this.COFF = await parse_coff(this, this.DOS)
-        this.PE = await parse_pe(this, this.DOS, this.COFF)
-        this.DICTIONARY = await parse_dictionary(this, this.DOS, this.PE)
-        this.SECTION = await parse_section(this, this.DOS, this.COFF)
     }
 
     bufferToString(buffer, wide, offset, size) {

@@ -10,7 +10,7 @@ export async function parseImport(parser, PE, dictionary) {
         result.NameRVA = view.getUint32(12, true)
         result.FirstThunk = view.getUint32(16, true)
         //零终止符
-        if (result.FirstThunk > 0) {
+        if (result.NameRVA > 0) {
             result.Name = await parser.pointerToString(result.NameRVA, false)
             result.ITEMS = await importItems(parser, PE, result.OriginalFirstThunk || result.FirstThunk)
             resultList.push(result)
@@ -36,7 +36,7 @@ export async function parseDelayImport(parser, PE, dictionary) {
         result.UnloadInformationTableRVA = view.getUint32(24, true)
         result.TimeDateStamp = view.getUint32(28, true)
         //零终止符
-        if (result.ImportAddressTableRVA > 0) {
+        if (result.DllNameRVA > 0) {
             result.Name = await parser.pointerToString(result.DllNameRVA, false)
             result.LIST = await importItems(parser, PE, result.ImportNameTableRVA || result.ImportAddressTableRVA)
             resultList.push(result)

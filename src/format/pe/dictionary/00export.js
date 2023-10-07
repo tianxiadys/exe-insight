@@ -18,6 +18,7 @@ export async function parse_export(parser, dictionary) {
 }
 
 async function export_items(parser, header) {
+    //序号映射到函数名
     const ordinalView = await parser.pointerToView(header.AddressOfNameOrdinals)
     const nameView = await parser.pointerToView(header.AddressofNames)
     const nameMap = new Map()
@@ -27,6 +28,7 @@ async function export_items(parser, header) {
         const nameString = await parser.pointerToString(namePointer, false)
         nameMap.set(ordinal, nameString)
     }
+    //查询所有导出函数
     const addressView = await parser.pointerToView(header.AddressOfFunctions)
     const itemList = []
     for (let index = 0; index < header.NumberOfFunctions; index++) {

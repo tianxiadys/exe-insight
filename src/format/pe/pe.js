@@ -22,9 +22,9 @@ export class ParserPE {
                 case 0:
                     this.EXPORT = await parse_export(this, dictionary)
                     break
-                // case 1:
-                //     this.IMPORT = await parse_import(this, dictionary)
-                //     break
+                case 1:
+                    this.IMPORT = await parse_import(this, this.PE, dictionary)
+                    break
                 // case 2:
                 //     this.RESOURCE = await parse_resource(this, dictionary, 0)
                 //     break
